@@ -1,71 +1,9 @@
-// Tutorial 12 - Provider-and-connect.js
-
-// Our tutorial is almost over and the only missing piece to leave you with a good overview of Redux is:
-// How do we read from our store's state and how do we dispatch actions?
-
-// Both of these questions can be answered using a single react-redux's binding: @connect class decorator.
-
-// As we previously explained, when using the Provider component we allow all components of our app to
-// access Redux. But this access can only be made through the undocumented feature "React's context". To
-// avoid asking you to use such "dark" React API, Redux is exposing a decorator (an ES7 feature that
-// makes it possible to annotate and modify classes and properties at design time -
-// https://github.com/wycats/javascript-decorators) that you can use on a component class.
-
-// The "connect" decorator (written @connect) literally connects your component with your Redux's store.
-// By doing so, it provides your store's dispatch function through a component's prop and also adds any
-// properties you want to expose as part of your store's state.
-
-// Using @connect, you'll turn a dumb component (https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0),
-// into a smart component with very little code overhead.
-
-// Please note also that you are not forced to use this ES7 decorator notation if you don't like it:
-/*
-  @somedecorator
-  export default class MyClass {}
-
-  // is the same as:
-
-  class MyClass {}
-  export default somedecorator(MyClass)
-
-  // Using Redux's connect decorator, those are equivalent:
-  let mapStateToProps = (state) => { ... }
-
-  @connect(mapStateToProps)
-  export default class MyClass {}
-
-  // is the same as:
-
-  class MyClass {}
-  export default connect(mapStateToProps)(MyClass)
-*/
-
 import React from 'react'
+import ReactDom from 'react-dom'
 import { connect } from 'react-redux'
 // We use the same ES6 import trick to get all action creators and produce a hash like we did with
 // our reducers. If you haven't yet, go get a look at our action creator (./actions-creators.js).
 import * as actionCreators from './action-creators'
-
-// The "connect" decorator is designed to address all use-cases, from the most simple to the most 
-// complex ones. In the present example, we're not going to use the most complex form of 'connect' but
-// you can find all information about it in the complete 'connect' API documentation here:
-// https://github.com/rackt/react-redux/blob/v4.0.0/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options
-
-// Here is the complete 'connect' signature:
-// connect([mapStateToProps], [mapDispatchToProps], [mergeProps], [options])
-
-// We will only focus here on the first 'connect' parameter: mapStateToProps...
-
-// The "connect" decorator takes, as first parameter, a function that will select which slice of your
-// state you want to expose to your component. This function is logically called a "selector" and
-// receives 2 parameters: the state of your store and the current props of your component.
-// The "mapStateToProps" name that we gave above is just a semantic name for our function that clearly
-// express what the function does: it maps (understand "extract some of") the state to few component props.
-// The props of the component are provided to handle common case like extracting a slice of your
-// state depending on a prop value (Ex: state.items[props.someID]).
-// The "selector"  function is expected to return the props that you wish to expose to your component (usually via 
-// an object literal). It's up to you to eventually transform the state you're receiving before returning it.
-// You can have a look right at that simplest 'connect' usage below.
 
 @connect((state/*, props*/) => {
     // This is our select function that will extract from the state the data slice we want to expose
@@ -76,7 +14,18 @@ import * as actionCreators from './action-creators'
       time: state._time.time
     }
 })
+
 export default class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.height =[];
+    var uistate=this.props.reduxState.mouseReducer
+    if(uistate.activeitem!==0 )
+    this.height.push( {
+      type: 'ACTIVE_ITEM', id: 0
+    })
+  }
+
   onTimeButtonClick () {
     // This button handler will dispatch an action in response to a click event from a user.
     // We use here the dispatch function "automatically" provided by @connect in a prop.
@@ -85,6 +34,243 @@ export default class Home extends React.Component {
     // https://github.com/rackt/react-redux/blob/v4.0.0/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options
     this.props.dispatch(actionCreators.getTime())
   }
+
+  // Check whether current mouse position is within a rectangle
+  regionhit ( x,  y,  w,  h){
+    var uistate=this.props.reduxState.mouseReducer
+
+    var canvas = ReactDom.findDOMNode(this.refs.canvas);
+    if(canvas){
+      var context = canvas.getContext("2d");
+      var p = context.getImageData(uistate.mousex, uistate.mousey, 1, 1).data;
+      var hex = "#" + ("000000" + this.rgbToHex(p[0], p[1], p[2])).slice(-6);
+      //console.log(hex);
+      if (hex!=="#000000") {
+       return false
+      }
+    }
+    if (uistate.mousex < x ||
+      uistate.mousey < y ||
+      uistate.mousex >= x + w ||
+      uistate.mousey >= y + h)
+      return false;
+      return true;
+    }
+
+  rgbToHex(r, g, b) {
+    if (r > 255 || g > 255 || b > 255)
+        throw "Invalid color component";
+    return ((r << 16) | (g << 8) | b).toString(16);
+  }
+
+  componentDidMount(){
+    var canvas = ReactDom.findDOMNode(this.refs.canvas);
+    if(canvas){
+      var context = canvas.getContext("2d");
+      // load image from data url
+      var imageObj = new Image();
+      imageObj.setAttribute('crossOrigin', 'anonymous');
+      imageObj.onload = function() {
+        context.drawImage(this, 0, 0);
+      };
+      imageObj.src = "http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png";
+    }
+  }
+
+  componentDidUpdate(){
+    if(this.height.length>1)
+    {
+      this.props.dispatch(this.height[this.height.length-1])
+    }
+    else {
+      if(this.height[0]){
+        this.props.dispatch(this.height[0])}
+      }
+      this.height=[]
+  };
+
+
+
+  desenhaButao(num,top,left){
+    var uistate=this.props.reduxState.mouseReducer;
+
+    if (uistate.activeitem == num){
+      if (uistate.mouseup){
+          if(uistate.hotitem==num )  {
+              alert("click")
+          }
+          // set notActive
+          if(uistate.activeitem!==0 )
+           {
+             this.height.push( {
+                  type: 'ACTIVE_ITEM', id: 0
+                })
+            }
+        }
+    }
+    else{
+      if(uistate.hotitem==num )
+          if (uistate.mousedown){
+             if(uistate.activeitem!==num )
+              this.height.push( {
+                     type: 'ACTIVE_ITEM', id: num
+                   })
+          }
+    }
+    //if inside
+    if (this.regionhit ( left ,  top , 64,  48)){
+            if(uistate.activeitem==0 )
+              {
+                if(uistate.hotitem!==num )
+                this.height.push( {
+                   type: 'HOT_ITEM', id: num
+                 })
+               }
+            if(uistate.activeitem==num ){
+              if(uistate.hotitem!==num )
+              this.height.push( {
+                 type: 'HOT_ITEM', id: num
+               })
+            }
+    }
+    //if outside
+    if (!this.regionhit ( left ,  top , 64,  48)){
+
+                  if(uistate.hotitem==num )
+                  this.height.push( {
+                     type: 'HOT_ITEM', id: 0
+                   })
+      }
+
+    var cor;
+
+          if (uistate.activeitem == num)
+          {
+                if (uistate.hotitem == num)
+              {
+                // Button is merely 'hot'
+                  cor="brown"
+              }else
+                // Button is both 'hot' and 'active'
+                  cor="yellow";
+          }
+        else
+        {
+              if (uistate.hotitem == num)
+            {
+              // Button is merely 'hot'
+                cor="green"
+            }else
+          // button is not hot, but it may be active
+           cor="blue"
+        }
+
+      return(
+         <div style={{position: "absolute",
+         top: top+"px",
+         left: left+"px",
+         backgroundColor: cor,
+         width: 64+"px",
+         height: "48px",
+         textAlign: "center"
+         }}>{num}</div>)
+
+    return(
+      <div style={{position: "absolute",
+      top: top+"px",
+      left: left+"px",
+      backgroundColor: "red",
+      width: 64+"px",
+      height: "48px",
+      textAlign: "center"
+      }}>{num}</div>)
+    }
+
+    desenhaCanvas(){
+
+      //return <div></div>
+      return (
+        <canvas
+          style={{
+            position:"absolute",
+            top:"0",
+            left:"0",
+            //transform:"rotate(10deg)"
+          }}
+          ref="canvas"
+          width={600}
+          height={600}>
+        </canvas>)
+
+    }
+
+    desenhaTexto(top,left,text){
+        return(
+        <div style={{
+          position: "absolute",
+          top: top+"px",
+          left: left+"px",
+          backgroundColor:"red"}}>
+          <h1>{text.slice(0,16)} </h1>
+          <h1>{text.slice(16,75)} </h1>
+        </div>
+      )
+    }
+
+    doOverlap( rect1 , rect2){
+      if (rect1.x < rect2.x + rect2.width &&
+       rect1.x + rect1.width > rect2.x &&
+       rect1.y < rect2.y + rect2.height &&
+       rect1.height + rect1.y > rect2.y) {
+        // collision detected!
+        return true;
+      }
+      return false;
+    }
+
+  desenhaMenu(){
+    var erro= false;
+    var {reduxState } = this.props
+    var a=reduxState.pagina[0].menu[2]
+    var b=reduxState.pagina[0].menu[3]
+    var bo=this.doOverlap({y:a.Butao[1],x:a.Butao[2],width: 64,height: 48},
+                            {y:b.Butao[1],x:b.Butao[2],width: 64,height: 48})
+    //console.log("EEE"+bo);
+    if(bo)   return(
+        {error: true ,div:this.desenhaTexto(300,200,"Please designers Learn some Math " )}
+
+     )
+
+    var buts=reduxState.pagina[0].menu.map(
+      a=> this.desenhaButao(a.Butao[0],a.Butao[1],a.Butao[2])
+    )
+    return(
+      {error: false ,div:<div>{(buts)}</div>}
+    )
+  }
+  desenhaCena(){
+  var {error,div}=this.desenhaMenu();
+
+    if(error){
+      return(
+        <div>
+          {this.desenhaCanvas()}
+           {div}
+
+         </div>
+      )
+
+    }
+    else {
+  return  (  <div>
+{div}
+    {this.desenhaCanvas()}
+
+    </div>
+    )}
+  }
+
+
   render () {
 
     // Thanks to our @connect decorator, we're able to get the data previously selected through the props.
@@ -101,7 +287,11 @@ export default class Home extends React.Component {
       <div>
         <h1>Provider and @connect example</h1>
         <span>
-          <b>What time is it?</b> { time ? `It is currently ${time}` : 'No idea yet...' }
+          <b>What time is it?</b>
+            <br/>
+             { time ? `It is currently ` : 'No idea yet...' }
+        <br/>
+           {time}
         </span>
         <br />
         {/* We register our button handler here and use the experimental ES7 function's binding operator "::"
@@ -110,6 +300,7 @@ export default class Home extends React.Component {
         <pre>
           redux state = { JSON.stringify(reduxState, null, 2) }
         </pre>
+        {this.desenhaCena()}
       </div>
     )
   }

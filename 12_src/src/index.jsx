@@ -15,6 +15,54 @@ import Application from './application'
 // instantiation.
 const store = createStore()
 
+var that=this;
+document.onmousemove = function(e) {
+
+  e = e || window.event
+
+  var mouseMoveCreator = function (name) {
+    return {
+      type: 'MOUSE_MOVE',
+      value_y: e.pageY,
+      value_x: e.pageX
+    }
+  }
+  store.dispatch(mouseMoveCreator('bob'))
+
+}
+
+document.onmousedown = function(e) {
+
+  e = e || window.event
+
+  var mouseDownCreator = function (name) {
+    return {
+      type: 'MOUSE_DOWN',
+      id: name,
+      value_y: e.pageY,
+      value_x: e.pageX
+    }
+  }
+  store.dispatch(mouseDownCreator('bob'))
+
+}
+
+document.onmouseup = function(e) {
+
+  e = e || window.event
+
+  var mouseUpCreator = function (name) {
+    return {
+      type: 'MOUSE_UP',
+      id: name,
+      value_y: e.pageY,
+      value_x: e.pageX
+    }
+  }
+  store.dispatch(mouseUpCreator('bob'))
+
+}
+
 // Now, time to render our application to the DOM using ReactDOM.render (or just render thanks to
 // the ES6 notation: import { render } from 'react-dom')...
 render(
