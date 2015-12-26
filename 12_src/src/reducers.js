@@ -39,7 +39,7 @@ export function _time(state = initialTimeState, action) {
 
 
 export function mouseReducer(state = {mousex: 0,mousey:0}, action) {
-    console.log('userReducer was called with state', state, 'and action', action)
+  //  console.log('userReducer was called with state', state, 'and action', action)
 
     switch (action.type) {
           case 'MOUSE_MOVE':
@@ -82,6 +82,16 @@ export function mouseReducer(state = {mousex: 0,mousey:0}, action) {
 }
 
 
+export function particReducer(state = [{position:[0,0],accel:0,velocity:0,mass:0}], action) {
+  //console.log('userReducer was called with state', state, 'and action', action)
+
+  switch (action.type) {
+    case 'PARTICLES':
+      return action.particule
+    default:
+      return state
+  }
+}
 export function pagina(state = [{menu:[
 
                                 {Butao:["a",400,267]},

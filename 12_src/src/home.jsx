@@ -186,23 +186,21 @@ export default class Home extends React.Component {
       }}>{num}</div>)
     }
 
-    desenhaCanvas(){
-
-      //return <div></div>
-      return (
-        <canvas
-          style={{
-            position:"absolute",
-            top:"0",
-            left:"0",
-            //transform:"rotate(10deg)"
-          }}
-          ref="canvas"
-          width={600}
-          height={600}>
-        </canvas>)
-
-    }
+    // desenhaCanvas(){
+    //   //return <div></div>
+    //   return (
+    //     <canvas
+    //       style={{
+    //         position:"absolute",
+    //         top:"0",
+    //         left:"0",
+    //         //transform:"rotate(10deg)"
+    //       }}
+    //       ref="canvas"
+    //       width={600}
+    //       height={600}>
+    //     </canvas>)
+    // }
 
     desenhaTexto(top,left,text){
         return(
@@ -254,7 +252,6 @@ export default class Home extends React.Component {
     if(error){
       return(
         <div>
-          {this.desenhaCanvas()}
            {div}
 
          </div>
@@ -264,7 +261,6 @@ export default class Home extends React.Component {
     else {
   return  (  <div>
 {div}
-    {this.desenhaCanvas()}
 
     </div>
     )}
@@ -283,8 +279,30 @@ export default class Home extends React.Component {
         }
     }
 
+
+    // </div>
+
+      var tt=reduxState.particReducer.map((p,i)=>{
+    //    console.log(p);
+    // console.log(p.position.toString() );
+    let [x,y] = [p.position[0] , p.position[1]]
+    let cor= "red"
+    if(i==1) cor="blue"
+    let style= {
+          position: "absolute",
+        backgroundColor: cor,
+        top: (((y-p.mass))/2).toFixed(1)+"px",
+        left: (((x-p.mass))/2).toFixed(1) +"px",
+        width: p.mass+"px",
+        height: p.mass+"px"
+    }
+        return(<div key={i} style={style}>
+
+        </div>); } )
+
     return (
       <div>
+        {tt}
         <h1>Provider and @connect example</h1>
         <span>
           <b>What time is it?</b>
@@ -298,7 +316,11 @@ export default class Home extends React.Component {
             to have our handler to be bound to the component's instance. */}
         <button { ...attrs } onClick={::this.onTimeButtonClick}>Get time!</button>
         <pre>
-          redux state = { JSON.stringify(reduxState, null, 2) }
+          redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
+          redux state = { JSON.stringify(reduxState._time, null, 2) }
+          redux state = { JSON.stringify(reduxState.pagina, null, 2) }
+
+
         </pre>
         {this.desenhaCena()}
       </div>
