@@ -280,19 +280,25 @@ export default class Home extends React.Component {
     }
 
 
-    // </div>
+    // desenha particulas
 
       var tt=reduxState.particReducer.map((p,i)=>{
     //    console.log(p);
     // console.log(p.position.toString() );
     let [x,y] = [p.position[0] , p.position[1]]
-    let cor= "red"
+    let xi= (((i+3)*2+100)%125)+100
+  //  if(xi<100) xi=xi+80
+    let mi=  (p.mass*2).toFixed(0)-20
+    let zi= (mi*xi+20)%255
+    // console.log(mi);
+
+    let cor= "rgb("+mi+","+ xi+","+zi+")";
     if(i==1) cor="blue"
     let style= {
           position: "absolute",
         backgroundColor: cor,
-        top: (((y-p.mass))/2).toFixed(1)+"px",
-        left: (((x-p.mass))/2).toFixed(1) +"px",
+        top: ((20+(y-p.mass))).toFixed(1)+"px",
+        left: ((20+(x-p.mass))).toFixed(1) +"px",
         width: p.mass+"px",
         height: p.mass+"px"
     }
@@ -320,6 +326,7 @@ export default class Home extends React.Component {
           redux state = { JSON.stringify(reduxState._time, null, 2) }
           redux state = { JSON.stringify(reduxState.pagina, null, 2) }
 
+ { /*  redux state =JSON.stringify(reduxState, null, 2) */}
 
         </pre>
         {this.desenhaCena()}

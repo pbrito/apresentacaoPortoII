@@ -133,23 +133,19 @@ document.onmouseup = function(e) {
 // position += velocity--------> part b
 
 const update = (p, friction) => {
-    let [[px,py], [vx,vy], [ax,ay]] =
-        [p.position, p.velocity, p.accel]
-
+    let [[px,py], [vx,vy], [ax,ay]] = [p.position, p.velocity, p.accel]
     vx = (vx+ax) * (1-friction)
     vy = (vy+ay) * (1-friction)
-
     let position = [px + vx, py + vy],
         accel = [0,0],
         velocity = [vx,vy]
-
     return { ...p, position, accel, velocity }
 }
 
 // force = m*a
 const applyForce = (p, m, a) => {
     let {accel} = p
-    accel = add(scale(a,m), accel)
+    accel = add(accel, scale(a,m))
     return { ...p, accel }
 }
 
@@ -172,15 +168,17 @@ const box = (mass=random(1,50)) => {
     return {...particle(), mass }
 }
 
-let particles = Array( 2)
+let particles = Array( 80)
 .fill(true)
  .map(_ => box())
 
 // painting loop
-const WORLD_FRICTION = .20
+const WORLD_FRICTION = .63
 
 looper(() => {
     particles = particles.map(p => update(p, WORLD_FRICTION))
+
+      store.dispatch( {type:'PARTICLES', particule: particles})
 })()
 
 
@@ -191,50 +189,35 @@ let mouse = [0,0],
     corners = [[100,100], [400,100], [400,400], [100,400]]
 
 // every 5 seconds, the mouse goes to a new corner
-setInterval(() => {
-  //  mouse_step = mouse_step === corners.length-1 ? 0 : mouse_step+1
-  //  var uistate=this.props.reduxState.mouseReducer
-
-    mouse = [store.getState().mouseReducer.mousex,store.getState().mouseReducer.mousey]
-}, 200)
+// setInterval(() => {
+//   //  mouse_step = mouse_step === corners.length-1 ? 0 : mouse_step+1
+//   //  var uistate=this.props.reduxState.mouseReducer
+//
+//     mouse = [store.getState().mouseReducer.mousex,store.getState().mouseReducer.mousey]
+// }, 200)
 
 
 // chase the mouse by continually applying/adjusting force to each particle
 looper(() => {
     particles = particles.map(p => {
         // find directional difference b/w mouse and this particle
-        let dir = sub(mouse, p.position)
-        // console.log(p.position[1]+" - "+mouse[1]+ "  =   "+dir[1]);
-        //console.log(mouse);
-        dir = normalize(dir)
-        // console.log(dir[1]);
-        if(Math.abs(dir[1])<0.28  )
-        {
-          return p;
-        }
-      else {
-
-
+        let dir = sub([store.getState().mouseReducer.mousex,store.getState().mouseReducer.mousey], p.position)
         // normalize it (make the unit length 1)
-
+        dir = normalize(dir)
         // apply movement to the particle in the direction of the mouse
-
-
-            return applyForce(p, p.mass, dir) //<-- use the mass
-
-
-    }
-})})()
+        return applyForce(p, p.mass, dir) //<-- use the mass
+    })
+})()
 
 
 
-
-setInterval(t => {
-  // console.log(particles);
-  //store.dispatch( {type:'Mouse', particule: particles})
-  //console.log(mouse);
-    store.dispatch( {type:'PARTICLES', particule: particles})
-}, 0)
+//
+// setInterval(t => {
+//   // console.log(particles);
+//   //store.dispatch( {type:'Mouse', particule: particles})
+//   //console.log(mouse);
+//     store.dispatch( {type:'PARTICLES', particule: particles})
+// }, 110)
 
 
 // Now, time to render our application to the DOM using ReactDOM.render (or just render thanks to
