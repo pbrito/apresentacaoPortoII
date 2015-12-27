@@ -173,7 +173,7 @@ let particles = Array( 80)
  .map(_ => box())
 
 // painting loop
-const WORLD_FRICTION = .63
+const WORLD_FRICTION = .73
 
 looper(() => {
     particles = particles.map(p => update(p, WORLD_FRICTION))
