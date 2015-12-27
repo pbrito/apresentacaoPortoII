@@ -168,7 +168,7 @@ const box = (mass=random(1,50)) => {
     return {...particle(), mass }
 }
 
-let particles = Array( 80)
+let particles = Array( 70)
 .fill(true)
  .map(_ => box())
 

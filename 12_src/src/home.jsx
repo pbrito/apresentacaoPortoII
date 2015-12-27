@@ -293,9 +293,11 @@ export default class Home extends React.Component {
     // console.log(mi);
 
     let cor= "rgb("+mi+","+ xi+","+zi+")";
-    if(i==1) cor="blue"
+    //if(i==1) cor="blue"
     let style= {
           position: "absolute",
+          WebkitFilter:"blur(0.1em)",
+           backgroundBlendMode: "multiply",
         backgroundColor: cor,
         top: ((20+(y-p.mass))).toFixed(1)+"px",
         left: ((20+(x-p.mass))).toFixed(1) +"px",
