@@ -248,22 +248,11 @@ export default class Home extends React.Component {
   }
   desenhaCena(){
   var {error,div}=this.desenhaMenu();
-
-    if(error){
-      return(
-        <div>
-           {div}
-
-         </div>
-      )
-
+  if(error){
+      return( <div> {div} </div>)
     }
-    else {
-  return  (  <div>
-{div}
-
-    </div>
-    )}
+  else {
+      return  (  <div>{div}</div> )}
   }
 
 
@@ -310,7 +299,7 @@ export default class Home extends React.Component {
 
     return (
       <div>
-        {tt}
+
         <h1>Provider and @connect example</h1>
         <span>
           <b>What time is it?</b>
@@ -332,6 +321,7 @@ export default class Home extends React.Component {
 
         </pre>
         {this.desenhaCena()}
+        {tt}
       </div>
     )
   }
