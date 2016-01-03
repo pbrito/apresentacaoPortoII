@@ -24,7 +24,15 @@ module.exports = function (webpackDevPort) {
       extensions: ['', '.js', '.jsx']
     },
     module: {
-      loaders: [{
+      noParse: [ /.*(pixi\.js).*/ ],
+      loaders: [
+
+        {
+				test: /\.json$/,
+				include: path.join(__dirname, 'node_modules', 'pixi.js'),
+				loader: 'json',
+			},
+      {
         test: /\.jsx?$/,
         loaders: ['react-hot', 'babel'],
         include: path.join(__dirname, 'src')

@@ -9,6 +9,7 @@ import { render } from 'react-dom'
 import createStore from './create-store'
 // Application is the root component of our application and the one that holds Redux's Provider...
 import Application from './application'
+import PIXI from "./pixi.min.js"
 
 // Just as we did so many times in previous examples, we need to create our redux instance. This time
 // all code for that task was moved to a specific module that returns a single function to trigger the
@@ -74,6 +75,23 @@ document.onmouseup = function(e) {
     const random = (min=0, max=400) =>
         Math.random()*(max-min)+min
 
+    const PIXIGraphics=()=>{
+            var wabbitTexture = new PIXI.Texture.fromImage("bunnys.png")
+            var	bunny1 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(2, 47, 26, 37));
+            var graphics = new PIXI.Sprite.fromImage('http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png');;
+            //var graphics = new PIXI.Graphics();
+            graphics.position.x = (Math.random() * 1000);
+            graphics.position.y = (Math.random() * 1000);
+            graphics.height=10
+            graphics.width=10
+
+            // graphics.alpha= 0.5;
+
+            graphics.speedX =  0;
+        		graphics.speedY =  0 ;
+
+            return graphics
+        }
     const vector = (x=random(),y=random()) => [x,y]
 
     const degToRad = deg => deg * Math.PI / 180
@@ -118,9 +136,10 @@ document.onmouseup = function(e) {
     const particle = (
       position=vector(),
       velocity=vector(),
-      accel=vector()
+      accel=vector(),
+      graphics = PIXIGraphics()
     ) => {
-        return {accel, velocity, position}
+        return {accel, velocity, position,graphics}
     }
 
 
@@ -168,7 +187,7 @@ const box = (mass=random(1,50)) => {
     return {...particle(), mass }
 }
 
-let particles = Array( 70)
+let particles = Array( 46)
 .fill(true)
  .map(_ => box())
 

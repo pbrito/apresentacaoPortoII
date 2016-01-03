@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDom from 'react-dom'
 import { connect } from 'react-redux'
+import PIXI from "./pixi.min.js"
 // We use the same ES6 import trick to get all action creators and produce a hash like we did with
 // our reducers. If you haven't yet, go get a look at our action creator (./actions-creators.js).
 import * as actionCreators from './action-creators'
@@ -18,6 +19,7 @@ import * as actionCreators from './action-creators'
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
+    this.renderer =null
     this.height =[];
     var uistate=this.props.reduxState.mouseReducer
     if(uistate.activeitem!==0 )
@@ -40,15 +42,18 @@ export default class Home extends React.Component {
     var uistate=this.props.reduxState.mouseReducer
 
     var canvas = ReactDom.findDOMNode(this.refs.canvas);
-    if(canvas){
-      var context = canvas.getContext("2d");
-      var p = context.getImageData(uistate.mousex, uistate.mousey, 1, 1).data;
-      var hex = "#" + ("000000" + this.rgbToHex(p[0], p[1], p[2])).slice(-6);
-      //console.log(hex);
-      if (hex!=="#000000") {
-       return false
-      }
-    }
+     if(canvas){
+       var context = canvas.getContext("2d");
+      //  console.log(canvas);
+      //  console.log(context);
+      //   var p = context.getImageData(uistate.mousex, uistate.mousey, 1, 1).data;
+    //   var hex = "#" + ("000000" + this.rgbToHex(p[0], p[1], p[2])).slice(-6);
+    //   //console.log(hex);
+    //   if (hex!=="#000000") {
+    //    return false
+    //   }
+     }
+
     if (uistate.mousex < x ||
       uistate.mousey < y ||
       uistate.mousex >= x + w ||
@@ -65,19 +70,62 @@ export default class Home extends React.Component {
 
   componentDidMount(){
     var canvas = ReactDom.findDOMNode(this.refs.canvas);
-    if(canvas){
-      var context = canvas.getContext("2d");
-      // load image from data url
-      var imageObj = new Image();
-      imageObj.setAttribute('crossOrigin', 'anonymous');
-      imageObj.onload = function() {
-        context.drawImage(this, 0, 0);
-      };
-      imageObj.src = "http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png";
-    }
+    // if(canvas){
+    //   var context = canvas.getContext("2d");
+    //   // load image from data url
+    //   var imageObj = new Image();
+    //   imageObj.setAttribute('crossOrigin', 'anonymous');
+    //   imageObj.onload = function() {
+    //     context.drawImage(this, 0, 0);
+    //   };
+    //   imageObj.src = "http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png";
+    // }
+console.log("_______");
+      console.log(ReactDom.findDOMNode(this));
+let vv=      document.getElementById("ident")//   ReactDom.findDOMNode(this.refs.canvas);
+console.log(vv);
+      this.renderer = new PIXI.WebGLRenderer(800, 600,{ view:vv,  transparent : true});
+      // console.log(this.renderer);
+      //     var graphics = new PIXI.Graphics();
+      //     graphics.lineStyle(20, 0x33FF00);
+      //     graphics.moveTo(30,30);
+      //     graphics.lineTo(600, 300);
+      // var stage = new PIXI.Container();
+      // stage.addChild(graphics);
+      //
+      // this.renderer.render(stage);
+      // console.log(this.renderer);
+      document.body.appendChild(this.renderer.view);
+
   }
 
   componentDidUpdate(){
+
+    var stage = new PIXI.Container();
+    
+    var tt=this.props.reduxState.particReducer.map((p,i)=>{
+  //    console.log(p);
+  // console.log(p.position.toString() );
+  let [x,y] = [p.position[0] , p.position[1]]
+  let xi= (((i+3)*2+100)%125)+100
+//  if(xi<100) xi=xi+80
+  let mi=  (p.mass*2).toFixed(0)-20
+  let zi= (mi*xi+20)%255
+  // console.log(mi);
+
+  let cor= "rgb("+mi+","+ xi+","+zi+")";
+
+
+        var graphics = new PIXI.Graphics();
+        graphics.lineStyle(20, 0x33FF00, 0.50);
+        graphics.moveTo(x,y);
+        graphics.lineTo(200, y);
+     stage.addChild(graphics);
+    //
+
+    //  document.body.appendChild(this.renderer.view);
+})
+  this.renderer.render(stage);
     if(this.height.length>1)
     {
       this.props.dispatch(this.height[this.height.length-1])
@@ -186,21 +234,22 @@ export default class Home extends React.Component {
       }}>{num}</div>)
     }
 
-    // desenhaCanvas(){
-    //   //return <div></div>
-    //   return (
-    //     <canvas
-    //       style={{
-    //         position:"absolute",
-    //         top:"0",
-    //         left:"0",
-    //         //transform:"rotate(10deg)"
-    //       }}
-    //       ref="canvas"
-    //       width={600}
-    //       height={600}>
-    //     </canvas>)
-    // }
+     desenhaCanvas(){
+      //return <div></div>
+      return (
+        <canvas
+          style={{
+            position:"absolute",
+            top:"0",
+            left:"0",
+            //transform:"rotate(10deg)"
+          }}
+          id="ident"
+          ref="canvas"
+          width={600}
+          height={600}>
+        </canvas>)
+    }
 
     desenhaTexto(top,left,text){
         return(
@@ -227,6 +276,8 @@ export default class Home extends React.Component {
     }
 
   desenhaMenu(){
+
+
     var erro= false;
     var {reduxState } = this.props
     var a=reduxState.pagina[0].menu[2]
@@ -249,10 +300,13 @@ export default class Home extends React.Component {
   desenhaCena(){
   var {error,div}=this.desenhaMenu();
   if(error){
-      return( <div> {div} </div>)
+      return( <div> wefwfe   {this.desenhaCanvas()}
+
+ {div} </div>)
     }
   else {
-      return  (  <div>{div}</div> )}
+      return  (  <div>wthyjuikjuhy {this.desenhaCanvas()}
+      {div}</div> )}
   }
 
 
@@ -270,32 +324,33 @@ export default class Home extends React.Component {
 
 
     // desenha particulas
-
-      var tt=reduxState.particReducer.map((p,i)=>{
-    //    console.log(p);
-    // console.log(p.position.toString() );
-    let [x,y] = [p.position[0] , p.position[1]]
-    let xi= (((i+3)*2+100)%125)+100
-  //  if(xi<100) xi=xi+80
-    let mi=  (p.mass*2).toFixed(0)-20
-    let zi= (mi*xi+20)%255
-    // console.log(mi);
-
-    let cor= "rgb("+mi+","+ xi+","+zi+")";
-    //if(i==1) cor="blue"
-    let style= {
-          position: "absolute",
-          WebkitFilter:"blur(0.1em)",
-           backgroundBlendMode: "multiply",
-        backgroundColor: cor,
-        top: ((20+(y-p.mass))).toFixed(1)+"px",
-        left: ((20+(x-p.mass))).toFixed(1) +"px",
-        width: p.mass+"px",
-        height: p.mass+"px"
-    }
-        return(<div key={i} style={style}>
-
-        </div>); } )
+  //
+  //     var tt=reduxState.particReducer.map((p,i)=>{
+  //   //    console.log(p);
+  //   // console.log(p.position.toString() );
+  //   let [x,y] = [p.position[0] , p.position[1]]
+  //   let xi= (((i+3)*2+100)%125)+100
+  // //  if(xi<100) xi=xi+80
+  //   let mi=  (p.mass*2).toFixed(0)-20
+  //   let zi= (mi*xi+20)%255
+  //   // console.log(mi);
+  //
+  //   let cor= "rgb("+mi+","+ xi+","+zi+")";
+  //   //if(i==1) cor="blue"
+  //   let style= {
+  //         position: "absolute",
+  //         WebkitFilter:"blur(0.1em)",
+  //          backgroundBlendMode: "multiply",
+  //       backgroundColor: cor,
+  //       top: ((20+(y-p.mass))).toFixed(1)+"px",
+  //       left: ((20+(x-p.mass))).toFixed(1) +"px",
+  //       width: p.mass+"px",
+  //       height: p.mass+"px"
+  //   }
+  //
+  //       return(<div key={i} style={style}>
+  //
+  //       </div>); } )
 
     return (
       <div>
@@ -321,7 +376,7 @@ export default class Home extends React.Component {
 
         </pre>
         {this.desenhaCena()}
-        {tt}
+        {/*tt*/}
       </div>
     )
   }
