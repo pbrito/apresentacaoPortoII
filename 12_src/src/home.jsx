@@ -20,7 +20,12 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.renderer =null
+    this.renderer2=null;
+    this.stage = new PIXI.Container();
+    this.stage2 = null;
     this.height =[];
+    this.bunnys=[];
+    this.tesoura=[];
     var uistate=this.props.reduxState.mouseReducer
     if(uistate.activeitem!==0 )
     this.height.push( {
@@ -69,63 +74,102 @@ export default class Home extends React.Component {
   }
 
   componentDidMount(){
-    var canvas = ReactDom.findDOMNode(this.refs.canvas);
-    // if(canvas){
-    //   var context = canvas.getContext("2d");
-    //   // load image from data url
-    //   var imageObj = new Image();
-    //   imageObj.setAttribute('crossOrigin', 'anonymous');
-    //   imageObj.onload = function() {
-    //     context.drawImage(this, 0, 0);
-    //   };
-    //   imageObj.src = "http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png";
-    // }
-console.log("_______");
-      console.log(ReactDom.findDOMNode(this));
-let vv=      document.getElementById("ident")//   ReactDom.findDOMNode(this.refs.canvas);
-console.log(vv);
+  //   console.log("fff");
+  //   console.log(this.refs);
+  //
+  //     console.log("_______");
+  //     console.log(ReactDom.findDOMNode(this));
+      let vv=      document.getElementById("ident")//   ReactDom.findDOMNode(this.refs.canvas);
+      console.log(vv);
       this.renderer = new PIXI.WebGLRenderer(800, 600,{ view:vv,  transparent : true});
-      // console.log(this.renderer);
-      //     var graphics = new PIXI.Graphics();
-      //     graphics.lineStyle(20, 0x33FF00);
-      //     graphics.moveTo(30,30);
-      //     graphics.lineTo(600, 300);
-      // var stage = new PIXI.Container();
-      // stage.addChild(graphics);
-      //
-      // this.renderer.render(stage);
-      // console.log(this.renderer);
+      let vv2=      document.getElementById("identdois")//   ReactDom.findDOMNode(this.refs.canvas);
+
+      this.renderer2 = new PIXI.WebGLRenderer(800, 600,{ view:vv2,  transparent : true});
+      this.stage2 = new PIXI.Container();
+
+                    var graphics2 = new PIXI.Graphics();
+                    graphics2.lineStyle(80, 0x0000FF, 0.7);
+                    graphics2.moveTo(320,200);
+                    graphics2.lineTo(30,234);
+                    this.stage2.addChild(graphics2)
+                    this.tesoura.push( graphics2);
+                    var graphics3 = new PIXI.Graphics();
+                    graphics3.lineStyle(80, 0x30FF00, 1);
+                    graphics3.moveTo(820,800);
+                    graphics3.lineTo(30,234);
+                    this.stage2.addChild(graphics3)
+                    this.tesoura.push( graphics3);
+                    this.tesoura.push( graphics3);
+                    document.body.appendChild(this.renderer2.view);
+        //this.renderer2.render(this.stage2);
+
+      for (var i = 0; i < this.props.reduxState.particReducer.length; i++){
+          let graphics = new PIXI.Graphics();
+          graphics.lineStyle(40, 0Xe7f418, 0.10);
+          graphics.moveTo(-20,0);
+          graphics.lineTo(30,0);
+          this.stage.addChild( graphics);
+          this.bunnys.push( graphics);
+
+      }
+
       document.body.appendChild(this.renderer.view);
 
   }
 
   componentDidUpdate(){
 
-    var stage = new PIXI.Container();
-    
+  var uistate=this.props.reduxState.mouseReducer;
     var tt=this.props.reduxState.particReducer.map((p,i)=>{
-  //    console.log(p);
-  // console.log(p.position.toString() );
-  let [x,y] = [p.position[0] , p.position[1]]
-  let xi= (((i+3)*2+100)%125)+100
-//  if(xi<100) xi=xi+80
-  let mi=  (p.mass*2).toFixed(0)-20
-  let zi= (mi*xi+20)%255
-  // console.log(mi);
+    //    console.log(p);
+    // console.log(p.position.toString() );
+    let [x,y] = [p.position[0] , p.position[1]]
+    let xi= (((i+3)*2+100)%125)+100
+    //  if(xi<100) xi=xi+80
+    let mi=  (p.mass*2).toFixed(0)-20
+    let zi= (mi*xi+20)%255
+    // console.log(mi);
+    var bunny = this.bunnys[i];
+    // bunny.rotation += 0.01;
+    bunny.position.x = x;
+    if(uistate.hotitem!=0)
+    {
+      if(uistate.hotitem==="c"){
+      bunny.tint= 0x000FF0;
+    }
+      else {
+        bunny.tint= 0XFFD4D5;
+      }
+    }
+    else {
+      bunny.tint= 0Xf70FFF;
+    }
+    bunny.position.y = y;
 
-  let cor= "rgb("+mi+","+ xi+","+zi+")";
+    var tesou = this.tesoura[0];
+    if(tesou.rotation < 2  ){
+      if (uistate.hotitem==0) {
 
+      tesou.rotation += 0.0001;
+      }
+}    else {
+    tesou.rotation -= 7;
+    }
+    tesou = this.tesoura[1];
+    if(tesou.rotation < 0.71){
+      if (uistate.hotitem==0) {
+    tesou.rotation += 0.00006;}}
+    else {
+    tesou.rotation -= 1.5;
+    }
+    //if(i==1) console.log(bunny);
+    // bunny.moveTo(x,y);
 
-        var graphics = new PIXI.Graphics();
-        graphics.lineStyle(20, 0x33FF00, 0.50);
-        graphics.moveTo(x,y);
-        graphics.lineTo(200, y);
-     stage.addChild(graphics);
-    //
+    let cor= "rgb("+mi+","+ xi+","+zi+")";
+  })
+  this.renderer.render(this.stage);
+  this.renderer2.render(this.stage2);
 
-    //  document.body.appendChild(this.renderer.view);
-})
-  this.renderer.render(stage);
     if(this.height.length>1)
     {
       this.props.dispatch(this.height[this.height.length-1])
@@ -306,7 +350,20 @@ console.log(vv);
     }
   else {
       return  (  <div>wthyjuikjuhy {this.desenhaCanvas()}
-      {div}</div> )}
+      {div}
+      <canvas   style={{
+          position:"absolute",
+          top:"0",
+          left:"0",
+          zIndex: "-2"
+          //transform:"rotate(10deg)"
+        }}
+        id="identdois"
+        ref="canvasdois"
+        width={600}
+        height={600}>
+      </canvas>
+    </div> )}
   }
 
 

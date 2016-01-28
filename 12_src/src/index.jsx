@@ -9,7 +9,6 @@ import { render } from 'react-dom'
 import createStore from './create-store'
 // Application is the root component of our application and the one that holds Redux's Provider...
 import Application from './application'
-import PIXI from "./pixi.min.js"
 
 // Just as we did so many times in previous examples, we need to create our redux instance. This time
 // all code for that task was moved to a specific module that returns a single function to trigger the
@@ -65,82 +64,58 @@ document.onmouseup = function(e) {
 }
 
 
+const random = (min=0, max=400) =>
+Math.random()*(max-min)+min
 
-    const logEm = (a) =>
-        a.map( ({position}) => `
-          x: ${position[0]}
-          y: ${position[1]}
-          -----------`).join('')
 
-    const random = (min=0, max=400) =>
-        Math.random()*(max-min)+min
+const vector = (x=random(),y=random()) => [x,y]
 
-    const PIXIGraphics=()=>{
-            var wabbitTexture = new PIXI.Texture.fromImage("bunnys.png")
-            var	bunny1 = new PIXI.Texture(wabbitTexture.baseTexture, new PIXI.math.Rectangle(2, 47, 26, 37));
-            var graphics = new PIXI.Sprite.fromImage('http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png');;
-            //var graphics = new PIXI.Graphics();
-            graphics.position.x = (Math.random() * 1000);
-            graphics.position.y = (Math.random() * 1000);
-            graphics.height=10
-            graphics.width=10
+const degToRad = deg => deg * Math.PI / 180
 
-            // graphics.alpha= 0.5;
+const radToDeg = rad => rad*180 / Math.PI
 
-            graphics.speedX =  0;
-        		graphics.speedY =  0 ;
+const add = (...vx) =>
+vx.reduce((a, v) =>
+[a[0] + v[0], a[1] + v[1]], [0,0])
 
-            return graphics
-        }
-    const vector = (x=random(),y=random()) => [x,y]
+const sub = (...vx) =>
+vx.reduce((a, v) =>
+[a[0] - v[0], a[1] - v[1]])
 
-    const degToRad = deg => deg * Math.PI / 180
+const scale = ([x,y],n) =>
+[n * x, n * y]
 
-    const radToDeg = rad => rad*180 / Math.PI
+const dot = ([x1,y1],[x2,y2]) =>
+x1*x2 + y1*y2
 
-    const add = (...vx) =>
-        vx.reduce((a, v) =>
-            [a[0] + v[0], a[1] + v[1]], [0,0])
+const rotate = ([x,y],deg) => {
+  let r = degToRad(deg),
+  [cos, sin] = [Math.cos(r), Math.sin(r)]
+  return [cos*x - sin*y, sin*x + cos*y]
+}
 
-    const sub = (...vx) =>
-        vx.reduce((a, v) =>
-            [a[0] - v[0], a[1] - v[1]])
+const normalize = v => scale(v,1/(mag(v) || 1))
 
-    const scale = ([x,y],n) =>
-        [n * x, n * y]
+const mag = ([x,y]) => Math.sqrt(x*x + y*y)
 
-    const dot = ([x1,y1],[x2,y2]) =>
-        x1*x2 + y1*y2
+const dist = ([x1,y1], [x2,y2]) =>
+Math.sqrt(Math.pow(x2-x1,2) + Math.pow(y2-y1,2))
 
-    const rotate = ([x,y],deg) => {
-        let r = degToRad(deg),
-            [cos, sin] = [Math.cos(r), Math.sin(r)]
-        return [cos*x - sin*y, sin*x + cos*y]
-    }
+const heading = (v) => {
+  let angle = angleBetween(v,[0,-1*mag(v)])
+  return v[0] < 0 ? 360-angle : angle
+}
 
-    const normalize = v => scale(v,1/(mag(v) || 1))
+const angleBetween = (v1,v2) =>
+radToDeg(Math.acos( dot(v1,v2) / (mag(v1)*mag(v2)) ))
 
-    const mag = ([x,y]) => Math.sqrt(x*x + y*y)
-
-    const dist = ([x1,y1], [x2,y2]) =>
-        Math.sqrt(Math.pow(x2-x1,2) + Math.pow(y2-y1,2))
-
-    const heading = (v) => {
-        let angle = angleBetween(v,[0,-1*mag(v)])
-        return v[0] < 0 ? 360-angle : angle
-    }
-
-    const angleBetween = (v1,v2) =>
-        radToDeg(Math.acos( dot(v1,v2) / (mag(v1)*mag(v2)) ))
-
-    const particle = (
-      position=vector(),
-      velocity=vector(),
-      accel=vector(),
-      graphics = PIXIGraphics()
-    ) => {
-        return {accel, velocity, position,graphics}
-    }
+const particle = (
+  position=vector(),
+  velocity=vector(),
+  accel=vector()
+) => {
+  return {accel, velocity, position}
+}
 
 
 // GIVE ME THE JUICE!
@@ -152,60 +127,58 @@ document.onmouseup = function(e) {
 // position += velocity--------> part b
 
 const update = (p, friction) => {
-    let [[px,py], [vx,vy], [ax,ay]] = [p.position, p.velocity, p.accel]
-    vx = (vx+ax) * (1-friction)
-    vy = (vy+ay) * (1-friction)
-    let position = [px + vx, py + vy],
-        accel = [0,0],
-        velocity = [vx,vy]
-    return { ...p, position, accel, velocity }
+  let [[px,py], [vx,vy], [ax,ay]] = [p.position, p.velocity, p.accel]
+  vx = (vx+ax) * (1-friction)
+  vy = (vy+ay) * (1-friction)
+  let position = [px + vx, py + vy],
+  accel = [0,0],
+  velocity = [vx,vy]
+  return { ...p, position, accel, velocity }
 }
 
 // force = m*a
 const applyForce = (p, m, a) => {
-    let {accel} = p
-    accel = add(accel, scale(a,m))
-    return { ...p, accel }
+  let {accel} = p
+  accel = add(accel, scale(a,m))
+  return { ...p, accel }
 }
 
 
 const looper = fn => {
-    let cb = (time) => {
-        requestAnimationFrame(cb)
-        let diff = ~~(time - (cb.time || 0)),
-            seconds_passed = diff/1000
-        fn(seconds_passed)
-        cb.time = time
-    }
-    return cb
+  let cb = (time) => {
+    requestAnimationFrame(cb)
+    let diff = ~~(time - (cb.time || 0)),
+    seconds_passed = diff/1000
+    fn(seconds_passed)
+    cb.time = time
+  }
+  return cb
 }
 
 
 
 
 const box = (mass=random(1,50)) => {
-    return {...particle(), mass }
+  return {...particle(), mass }
 }
 
-let particles = Array( 46)
-.fill(true)
- .map(_ => box())
+let particles = Array(346).fill(true).map(_ => box())
 
 // painting loop
-const WORLD_FRICTION = .73
+const WORLD_FRICTION = .77
 
 looper(() => {
-    particles = particles.map(p => update(p, WORLD_FRICTION))
+  particles = particles.map(p => update(p, WORLD_FRICTION))
 
-      store.dispatch( {type:'PARTICLES', particule: particles})
+  store.dispatch( {type:'PARTICLES', particule: particles})
 })()
 
 
 // the mouse
 
 let mouse = [0,0],
-    mouse_step = 0,
-    corners = [[100,100], [400,100], [400,400], [100,400]]
+mouse_step = 0,
+corners = [[100,100], [400,100], [400,400], [100,400]]
 
 // every 5 seconds, the mouse goes to a new corner
 // setInterval(() => {
@@ -218,14 +191,14 @@ let mouse = [0,0],
 
 // chase the mouse by continually applying/adjusting force to each particle
 looper(() => {
-    particles = particles.map(p => {
-        // find directional difference b/w mouse and this particle
-        let dir = sub([store.getState().mouseReducer.mousex,store.getState().mouseReducer.mousey], p.position)
-        // normalize it (make the unit length 1)
-        dir = normalize(dir)
-        // apply movement to the particle in the direction of the mouse
-        return applyForce(p, p.mass, dir) //<-- use the mass
-    })
+  particles = particles.map(p => {
+    // find directional difference b/w mouse and this particle
+    let dir = sub([store.getState().mouseReducer.mousex,store.getState().mouseReducer.mousey], p.position)
+    // normalize it (make the unit length 1)
+    dir = normalize(dir)
+    // apply movement to the particle in the direction of the mouse
+    return applyForce(p, p.mass, dir) //<-- use the mass
+  })
 })()
 
 
