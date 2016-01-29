@@ -23,8 +23,10 @@ export default class Home extends React.Component {
     this.renderer2=null;
     this.stage = new PIXI.Container();
     this.stage2 = null;
+    //
     this.height =[];
     this.bunnys=[];
+    //elementos da animacao em background
     this.tesoura=[];
     var uistate=this.props.reduxState.mouseReducer
     if(uistate.activeitem!==0 )
@@ -74,11 +76,7 @@ export default class Home extends React.Component {
   }
 
   componentDidMount(){
-  //   console.log("fff");
-  //   console.log(this.refs);
-  //
-  //     console.log("_______");
-  //     console.log(ReactDom.findDOMNode(this));
+
       let vv=      document.getElementById("ident")//   ReactDom.findDOMNode(this.refs.canvas);
       console.log(vv);
       this.renderer = new PIXI.WebGLRenderer(800, 600,{ view:vv,  transparent : true});
@@ -146,22 +144,8 @@ export default class Home extends React.Component {
     }
     bunny.position.y = y;
 
-    var tesou = this.tesoura[0];
-    if(tesou.rotation < 2  ){
-      if (uistate.hotitem==0) {
+    
 
-      tesou.rotation += 0.0001;
-      }
-}    else {
-    tesou.rotation -= 7;
-    }
-    tesou = this.tesoura[1];
-    if(tesou.rotation < 0.71){
-      if (uistate.hotitem==0) {
-    tesou.rotation += 0.00006;}}
-    else {
-    tesou.rotation -= 1.5;
-    }
     //if(i==1) console.log(bunny);
     // bunny.moveTo(x,y);
 
@@ -183,8 +167,13 @@ export default class Home extends React.Component {
 
 
 
-  desenhaButao(num,top,left){
+  desenhaButao(but){
+    var num= but.nome;
+    var top = but.y;
+    var left= but.x;
+
     var uistate=this.props.reduxState.mouseReducer;
+    var subM=(<div/>)
 
     if (uistate.activeitem == num){
       if (uistate.mouseup){
@@ -241,10 +230,14 @@ export default class Home extends React.Component {
                 if (uistate.hotitem == num)
               {
                 // Button is merely 'hot'
-                  cor="brown"
-              }else
+                  cor="grey"
+
+              }else{
                 // Button is both 'hot' and 'active'
                   cor="yellow";
+
+                }
+
           }
         else
         {
@@ -252,12 +245,27 @@ export default class Home extends React.Component {
             {
               // Button is merely 'hot'
                 cor="green"
+                var ttp=top+60;
+                if (but.subMenu)
+                 subM=but.subMenu.map(
+                   (a,i)=>  <div style={{position: "absolute",
+                    top: (ttp+(64*i))+"px",
+                    left: left+"px",
+                    backgroundColor: cor,
+                    width: 64+"px",
+                    height: "48px",
+                    textAlign: "center"
+                  }}>{a.nome}{/*i*/}</div>
+                 )
+
             }else
           // button is not hot, but it may be active
            cor="blue"
         }
 
+
       return(
+        <div>
          <div style={{position: "absolute",
          top: top+"px",
          left: left+"px",
@@ -265,17 +273,9 @@ export default class Home extends React.Component {
          width: 64+"px",
          height: "48px",
          textAlign: "center"
-         }}>{num}</div>)
-
-    return(
-      <div style={{position: "absolute",
-      top: top+"px",
-      left: left+"px",
-      backgroundColor: "red",
-      width: 64+"px",
-      height: "48px",
-      textAlign: "center"
-      }}>{num}</div>)
+         }}>{num}</div>
+       {subM}
+     </div>)
     }
 
      desenhaCanvas(){
@@ -321,32 +321,53 @@ export default class Home extends React.Component {
 
   desenhaMenu(){
 
-
     var erro= false;
-    var {reduxState } = this.props
+    var {reduxState } = this.props;
+
+    //test de overlaping Só testa o 2 com o 3
     var a=reduxState.pagina[0].menu[2]
     var b=reduxState.pagina[0].menu[3]
-    var bo=this.doOverlap({y:a.Butao[1],x:a.Butao[2],width: 64,height: 48},
-                            {y:b.Butao[1],x:b.Butao[2],width: 64,height: 48})
-    //console.log("EEE"+bo);
-    if(bo)   return(
-        {error: true ,div:this.desenhaTexto(300,200,"Please designers Learn some Math " )}
+    var bo=this.doOverlap({y:a.y,x:a.x,width: 64,height: 48},
+                            {y:b.y,x:b.x,width: 64,height: 48})
+    // fim teste
 
-     )
-
-    var buts=reduxState.pagina[0].menu.map(
-      a=> this.desenhaButao(a.Butao[0],a.Butao[1],a.Butao[2])
-    )
-    return(
-      {error: false ,div:<div>{(buts)}</div>}
-    )
+    if(bo){
+      return(
+        { error: true ,
+          div:this.desenhaTexto(300,200,"Please designers Learn some Math " )
+        }
+      )
+     }
+     else{
+       var buts=reduxState.pagina[0].menu.map(
+         a=> this.desenhaButao(a)
+       )
+       return(
+         {error: true ,div:<div>{(buts)}</div>}
+       )
+     }
   }
-  desenhaCena(){
-  var {error,div}=this.desenhaMenu();
-  if(error){
-      return( <div> wefwfe   {this.desenhaCanvas()}
 
- {div} </div>)
+  desenhaCena(){
+    var {error,div}=this.desenhaMenu();
+
+    if(error){
+      return( <div> wefwfe   {this.desenhaCanvas()}
+           {div}
+           <canvas   style={{
+               position:"absolute",
+               top:"0",
+               left:"0",
+               zIndex: "-2"
+               //transform:"rotate(10deg)"
+             }}
+             id="identdois"
+             ref="canvasdois"
+             width={600}
+             height={600}>
+           </canvas>
+           </div>
+         )
     }
   else {
       return  (  <div>wthyjuikjuhy {this.desenhaCanvas()}

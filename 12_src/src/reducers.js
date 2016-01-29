@@ -94,10 +94,29 @@ export function particReducer(state = [{position:[0,0],accel:0,velocity:0,mass:0
 }
 export function pagina(state = [{menu:[
 
-                                {Butao:["a",400,267]},
-                                {Butao:["b",400,336]},
-                                {Butao:["c",400,410]},
-                                {Butao:[1,400,476]}]}], action) {
+                                {type:"Butao",
+                                  nome:"a",
+                                  y:400,
+                                  x:267},
+                                  {type:"Butao",
+                                    nome:"b",
+                                    y:400,
+                                    x:336,
+                                    subMenu:[
+                                      {nome:"ioio"},
+                                      {nome:"jyed"},
+                                    ]
+
+                                  },
+                                    {type:"Butao",
+                                      nome:"c",
+                                      y:400,
+                                      x:410},
+                                      {type:"Butao",
+                                        nome:1,
+                                        y:400,
+                                        x:476}
+                              ]}], action) {
   switch (action.type) {
     default:
       return state
