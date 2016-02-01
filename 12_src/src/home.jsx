@@ -28,6 +28,8 @@ export default class Home extends React.Component {
     this.bunnys=[];
     //elementos da animacao em background
     this.tesoura=[];
+    //diversas animacoes
+    this.animacoes={"wygygyge":1234}
     var uistate=this.props.reduxState.mouseReducer
     if(uistate.activeitem!==0 )
     this.height.push( {
@@ -133,18 +135,25 @@ export default class Home extends React.Component {
     if(uistate.hotitem!=0)
     {
       if(uistate.hotitem==="c"){
-      bunny.tint= 0x000FF0;
-    }
+        bunny.tint= 0x000FF0;
+      }
       else {
         bunny.tint= 0XFFD4D5;
       }
     }
     else {
+      this.animacoes={}
       bunny.tint= 0Xf70FFF;
     }
     bunny.position.y = y;
 
-    
+
+    var tesou = this.tesoura[0];
+
+      if (uistate.hotitem==0) {
+
+    //  tesou.rotation += 0.0001;
+      }
 
     //if(i==1) console.log(bunny);
     // bunny.moveTo(x,y);
@@ -245,18 +254,36 @@ export default class Home extends React.Component {
             {
               // Button is merely 'hot'
                 cor="green"
-                var ttp=top+60;
+                var ttp=0;
                 if (but.subMenu)
                  subM=but.subMenu.map(
-                   (a,i)=>  <div style={{position: "absolute",
+                   (a,i)=>  {
+                     var nn=""
+                     if(this.animacoes[a.nome]===undefined)
+                        {
+                          ttp=top
+                          this.animacoes[a.nome]=0.0
+
+                        }
+                     else{
+
+                        if(this.animacoes[a.nome]<60)
+                        {ttp=top+this.animacoes[a.nome]
+                          this.animacoes[a.nome]=this.animacoes[a.nome]+1}
+                        else{
+                          nn=a.nome
+                          ttp=top+this.animacoes[a.nome]
+                        }
+                     }
+                     return ( <div style={{position: "absolute",
                     top: (ttp+(64*i))+"px",
                     left: left+"px",
                     backgroundColor: cor,
-                    width: 64+"px",
+                    width: this.animacoes[a.nome]+"px",
                     height: "48px",
                     textAlign: "center"
-                  }}>{a.nome}{/*i*/}</div>
-                 )
+                  }}>{nn}{/*i*/}</div>)
+                })
 
             }else
           // button is not hot, but it may be active
