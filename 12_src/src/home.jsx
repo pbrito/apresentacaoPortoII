@@ -142,7 +142,16 @@ export default class Home extends React.Component {
       }
     }
     else {
-      this.animacoes={}
+      // console.log(this.animacoes);
+       if(this.animacoes.anim)
+         {
+            // console.log(this.animacoes.anim);
+           if(this.animacoes.anim=="up" && this.animacoes["ioio"].delta<=0)
+            this.animacoes={}
+          if(this.animacoes.anim=="down")
+           this.animacoes.anim="up"
+
+         }
       bunny.tint= 0Xf70FFF;
     }
     bunny.position.y = y;
@@ -254,32 +263,44 @@ export default class Home extends React.Component {
             {
               // Button is merely 'hot'
                 cor="green"
+
+
                 var ttp=0;
                 if (but.subMenu)
                  subM=but.subMenu.map(
                    (a,i)=>  {
-                     var nn=""
+                     var nn="";
                      if(this.animacoes[a.nome]===undefined)
                         {
                           ttp=top
-                          this.animacoes[a.nome]=0.0
+                          this.animacoes[a.nome]={"delta":0.0}
+                           this.animacoes["anim"]="down"
 
                         }
                      else{
+                       nn=a.nome.slice(0,Math.floor(this.animacoes[a.nome].delta/15))
+                        if(this.animacoes[a.nome].delta<60)
+                        {
+                          ttp=top+this.animacoes[a.nome].delta
 
-                        if(this.animacoes[a.nome]<60)
-                        {ttp=top+this.animacoes[a.nome]
-                          this.animacoes[a.nome]=this.animacoes[a.nome]+1}
+                         if(this.animacoes.anim=="down")
+                          this.animacoes[a.nome].delta= this.animacoes[a.nome].delta+0.3
+
+                          if(this.animacoes.anim=="up")
+                           this.animacoes[a.nome].delta= this.animacoes[a.nome].delta-0.3
+
+
+                        }
                         else{
                           nn=a.nome
-                          ttp=top+this.animacoes[a.nome]
+                          ttp=top+this.animacoes[a.nome].delta
                         }
                      }
                      return ( <div style={{position: "absolute",
                     top: (ttp+(64*i))+"px",
                     left: left+"px",
                     backgroundColor: cor,
-                    width: this.animacoes[a.nome]+"px",
+                    width: this.animacoes[a.nome].delta+"px",
                     height: "48px",
                     textAlign: "center"
                   }}>{nn}{/*i*/}</div>)
