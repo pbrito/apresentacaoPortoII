@@ -20,14 +20,15 @@ document.onmousemove = function(e) {
 
   e = e || window.event
 
-  var mouseMoveCreator = function (name) {
+  var mouseMoveCreator = function (name,date) {
     return {
       type: 'MOUSE_MOVE',
+      date: date,
       value_y: e.pageY,
       value_x: e.pageX
     }
   }
-  store.dispatch(mouseMoveCreator('bob'))
+  store.dispatch(mouseMoveCreator('bob',new Date() ))
 
 }
 
@@ -35,15 +36,16 @@ document.onmousedown = function(e) {
 
   e = e || window.event
 
-  var mouseDownCreator = function (name) {
+  var mouseDownCreator = function (name,date) {
     return {
       type: 'MOUSE_DOWN',
       id: name,
+      date: date,
       value_y: e.pageY,
       value_x: e.pageX
     }
   }
-  store.dispatch(mouseDownCreator('bob'))
+  store.dispatch(mouseDownCreator('bob',new Date() ))
 
 }
 
@@ -51,15 +53,16 @@ document.onmouseup = function(e) {
 
   e = e || window.event
 
-  var mouseUpCreator = function (name) {
+  var mouseUpCreator = function (name,date) {
     return {
       type: 'MOUSE_UP',
       id: name,
+      date: date,
       value_y: e.pageY,
       value_x: e.pageX
     }
   }
-  store.dispatch(mouseUpCreator('bob'))
+  store.dispatch(mouseUpCreator('bob',new Date() ))
 
 }
 
@@ -162,13 +165,14 @@ const box = (mass=random(1,50)) => {
   return {...particle(), mass }
 }
 
-let particles = Array(346).fill(true).map(_ => box())
+let particles = Array(46).fill(true).map(_ => box())
 
 // painting loop
 const WORLD_FRICTION = .77
 
 looper(() => {
-  particles = particles.map(p => update(p, WORLD_FRICTION))
+  particles = particles.map((p,i) =>{
+    return  update(p, WORLD_FRICTION)})
 
   store.dispatch( {type:'PARTICLES', particule: particles})
 })()

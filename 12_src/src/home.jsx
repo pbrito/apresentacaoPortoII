@@ -23,7 +23,6 @@ export default class Home extends React.Component {
     this.renderer2=null;
     this.stage = new PIXI.Container();
     this.stage2 = null;
-    //
     this.height =[];
     this.bunnys=[];
     //elementos da animacao em background
@@ -49,19 +48,18 @@ export default class Home extends React.Component {
   // Check whether current mouse position is within a rectangle
   regionhit ( x,  y,  w,  h){
     var uistate=this.props.reduxState.mouseReducer
-
     var canvas = ReactDom.findDOMNode(this.refs.canvas);
-     if(canvas){
-       var context = canvas.getContext("2d");
+    if(canvas){
+      var context = canvas.getContext("2d");
       //  console.log(canvas);
       //  console.log(context);
       //   var p = context.getImageData(uistate.mousex, uistate.mousey, 1, 1).data;
-    //   var hex = "#" + ("000000" + this.rgbToHex(p[0], p[1], p[2])).slice(-6);
-    //   //console.log(hex);
-    //   if (hex!=="#000000") {
-    //    return false
-    //   }
-     }
+      //   var hex = "#" + ("000000" + this.rgbToHex(p[0], p[1], p[2])).slice(-6);
+      //   //console.log(hex);
+      //   if (hex!=="#000000") {
+      //    return false
+      //   }
+    }
 
     if (uistate.mousex < x ||
       uistate.mousey < y ||
@@ -72,9 +70,8 @@ export default class Home extends React.Component {
     }
 
   rgbToHex(r, g, b) {
-    if (r > 255 || g > 255 || b > 255)
-        throw "Invalid color component";
-    return ((r << 16) | (g << 8) | b).toString(16);
+    if (r > 255 || g > 255 || b > 255) {return "000";}
+    else {  return ((r << 16) | (g << 8) | b).toString(16);}
   }
 
   componentDidMount(){
@@ -85,23 +82,45 @@ export default class Home extends React.Component {
       let vv2=      document.getElementById("identdois")//   ReactDom.findDOMNode(this.refs.canvas);
 
       this.renderer2 = new PIXI.WebGLRenderer(800, 600,{ view:vv2,  transparent : true});
+
+      var zombieTexture = PIXI.Texture.fromImage('http://localhost:5984/geoj/zombie_img/05.png');
+
+      // Teste de truque para colisao --NAO FUNCIONA
+      // ver pahser pixelperfect collision
+      // var maskSource = document.createElement("canvas");
+      // maskSource.width = 1140;
+      //  maskSource.height = 800;
+      // var context = maskSource.getContext("2d");
+      // var img = new Image();
+      // img.setAttribute('crossOrigin', 'anonymous');
+      // img.onload = function () {
+      //     context.drawImage(img, 0, 0);
+      // }
+      // img.src = "http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png";
+
+    var zombie = new PIXI.Sprite(zombieTexture);
+
+
       this.stage2 = new PIXI.Container();
 
-                    var graphics2 = new PIXI.Graphics();
-                    graphics2.lineStyle(80, 0x0000FF, 0.7);
-                    graphics2.moveTo(320,200);
-                    graphics2.lineTo(30,234);
-                    this.stage2.addChild(graphics2)
-                    this.tesoura.push( graphics2);
-                    var graphics3 = new PIXI.Graphics();
-                    graphics3.lineStyle(80, 0x30FF00, 1);
-                    graphics3.moveTo(820,800);
-                    graphics3.lineTo(30,234);
-                    this.stage2.addChild(graphics3)
-                    this.tesoura.push( graphics3);
-                    this.tesoura.push( graphics3);
-                    document.body.appendChild(this.renderer2.view);
-        //this.renderer2.render(this.stage2);
+      var graphics2 = new PIXI.Graphics();
+      graphics2.lineStyle(80, 0x0000FF, 0.7);
+      graphics2.moveTo(320,200);
+      graphics2.lineTo(30,234);
+      this.stage2.addChild(graphics2)
+      this.tesoura.push( graphics2);
+      var graphics3 = new PIXI.Graphics();
+      graphics3.lineStyle(80, 0x30FF00, 1);
+      graphics3.moveTo(820,800);
+      graphics3.lineTo(30,234);
+      this.stage2.addChild(graphics3)
+      this.tesoura.push( graphics3);
+      this.tesoura.push( graphics3);
+      this.stage2.addChild(zombie);
+
+      document.body.appendChild(this.renderer2.view);
+
+
 
       for (var i = 0; i < this.props.reduxState.particReducer.length; i++){
           let graphics = new PIXI.Graphics();
@@ -119,59 +138,46 @@ export default class Home extends React.Component {
 
   componentDidUpdate(){
 
-  var uistate=this.props.reduxState.mouseReducer;
+    var uistate=this.props.reduxState.mouseReducer;
+
+    //console.log(this.props.reduxState.particReducer);
     var tt=this.props.reduxState.particReducer.map((p,i)=>{
-    //    console.log(p);
-    // console.log(p.position.toString() );
-    let [x,y] = [p.position[0] , p.position[1]]
-    let xi= (((i+3)*2+100)%125)+100
-    //  if(xi<100) xi=xi+80
-    let mi=  (p.mass*2).toFixed(0)-20
-    let zi= (mi*xi+20)%255
-    // console.log(mi);
-    var bunny = this.bunnys[i];
-    // bunny.rotation += 0.01;
-    bunny.position.x = x;
-    if(uistate.hotitem!=0)
-    {
-      if(uistate.hotitem==="c"){
-        bunny.tint= 0x000FF0;
+      // console.log(p.position.toString() );
+      let [x,y] = [p.position[0] , p.position[1]]
+
+      let xi= (((i+3)*2+100)%125)+100
+      //  if(xi<100) xi=xi+80
+      let mi=  (p.mass*2).toFixed(0)-20
+      let zi= (mi*xi+20)%255
+      // console.log(mi);
+      var bunny = this.bunnys[i];
+      // bunny.rotation += 0.01;
+      bunny.position.x = x;
+      if(uistate.hotitem!=0)
+      {
+        if(uistate.hotitem==="c"){
+          bunny.tint= 0x000FF0;
+        }
+        else {
+          bunny.tint= 0XFFD4D5;
+        }
       }
       else {
-        bunny.tint= 0XFFD4D5;
+        this.animacoes={}
+        bunny.tint= 0Xf70FFF;
       }
-    }
-    else {
-      // console.log(this.animacoes);
-       if(this.animacoes.anim)
-         {
-            // console.log(this.animacoes.anim);
-           if(this.animacoes.anim=="up" && this.animacoes["ioio"].delta<=0)
-            this.animacoes={}
-          if(this.animacoes.anim=="down")
-           this.animacoes.anim="up"
-
-         }
-      bunny.tint= 0Xf70FFF;
-    }
-    bunny.position.y = y;
-
-
-    var tesou = this.tesoura[0];
-
+      bunny.position.y = y;
+      var tesou = this.tesoura[0];
       if (uistate.hotitem==0) {
-
-    //  tesou.rotation += 0.0001;
+        //  tesou.rotation += 0.0001;
       }
+      //if(i==1) console.log(bunny);
+      // bunny.moveTo(x,y);
+      let cor= "rgb("+mi+","+ xi+","+zi+")";
+    })
 
-    //if(i==1) console.log(bunny);
-    // bunny.moveTo(x,y);
-
-    let cor= "rgb("+mi+","+ xi+","+zi+")";
-  })
-  this.renderer.render(this.stage);
-  this.renderer2.render(this.stage2);
-
+    this.renderer.render(this.stage);
+    this.renderer2.render(this.stage2);
     if(this.height.length>1)
     {
       this.props.dispatch(this.height[this.height.length-1])
@@ -183,147 +189,124 @@ export default class Home extends React.Component {
       this.height=[]
   };
 
-
-
   desenhaButao(but){
     var num= but.nome;
     var top = but.y;
     var left= but.x;
-
     var uistate=this.props.reduxState.mouseReducer;
     var subM=(<div/>)
 
     if (uistate.activeitem == num){
       if (uistate.mouseup){
-          if(uistate.hotitem==num )  {
-              alert("click")
-          }
-          // set notActive
-          if(uistate.activeitem!==0 )
-           {
-             this.height.push( {
-                  type: 'ACTIVE_ITEM', id: 0
-                })
-            }
+        if(uistate.hotitem==num )  {
+          alert("click")
         }
+        // set notActive
+        if(uistate.activeitem!==0 )
+        {
+          this.height.push( {
+            type: 'ACTIVE_ITEM', id: 0
+          })
+        }
+      }
     }
     else{
       if(uistate.hotitem==num )
-          if (uistate.mousedown){
-             if(uistate.activeitem!==num )
-              this.height.push( {
-                     type: 'ACTIVE_ITEM', id: num
-                   })
-          }
+      if (uistate.mousedown){
+        if(uistate.activeitem!==num )
+        this.height.push( {
+          type: 'ACTIVE_ITEM', id: num
+        })
+      }
     }
     //if inside
     if (this.regionhit ( left ,  top , 64,  48)){
-            if(uistate.activeitem==0 )
-              {
-                if(uistate.hotitem!==num )
-                this.height.push( {
-                   type: 'HOT_ITEM', id: num
-                 })
-               }
-            if(uistate.activeitem==num ){
-              if(uistate.hotitem!==num )
-              this.height.push( {
-                 type: 'HOT_ITEM', id: num
-               })
-            }
+      if(uistate.activeitem==0 )
+      {
+        if(uistate.hotitem!==num )
+        this.height.push( {
+          type: 'HOT_ITEM', id: num
+        })
+      }
+      if(uistate.activeitem==num ){
+        if(uistate.hotitem!==num )
+        this.height.push( {
+          type: 'HOT_ITEM', id: num
+        })
+      }
     }
     //if outside
     if (!this.regionhit ( left ,  top , 64,  48)){
-
-                  if(uistate.hotitem==num )
-                  this.height.push( {
-                     type: 'HOT_ITEM', id: 0
-                   })
-      }
-
+      if(uistate.hotitem==num )
+      this.height.push( {
+        type: 'HOT_ITEM', id: 0
+      })
+    }
     var cor;
-
-          if (uistate.activeitem == num)
-          {
-                if (uistate.hotitem == num)
-              {
-                // Button is merely 'hot'
-                  cor="grey"
-
-              }else{
-                // Button is both 'hot' and 'active'
-                  cor="yellow";
-
-                }
-
-          }
-        else
-        {
-              if (uistate.hotitem == num)
+    if (uistate.activeitem == num)
+    {
+      if (uistate.hotitem == num)
+      {// Button is merely 'hot'
+        cor="grey"
+      }else{
+        // Button is both 'hot' and 'active'
+        cor="yellow";
+      }
+    }
+    else
+    {
+      if (uistate.hotitem == num)
+      {// Button is merely 'hot'
+        cor="green"
+        var ttp=0;
+        if (but.subMenu)
+        subM=but.subMenu.map(
+          (a,i)=>  {
+            var nn="";
+            if(this.animacoes[a.nome]===undefined)
             {
-              // Button is merely 'hot'
-                cor="green"
+              ttp=top
+              this.animacoes[a.nome]={"delta":0.0}
+            }
+            else{
+              nn=a.nome.slice(0,Math.floor(this.animacoes[a.nome].delta/15))
+              if(this.animacoes[a.nome].delta<60)
+              {ttp=top+this.animacoes[a.nome].delta
+                this.animacoes[a.nome]={"delta": this.animacoes[a.nome].delta+3 }
+              }
+              else{
+                nn=a.nome
+                ttp=top+this.animacoes[a.nome].delta
+              }
+            }
+            return ( <div style={{position: "absolute",
+              top: (ttp+(64*i))+"px",
+              left: left+"px",
+              backgroundColor: cor,
+              width: this.animacoes[a.nome].delta+"px",
+              height: "48px",
+              textAlign: "center"
+            }}>{nn}{/*i*/}</div>)
+          })
 
-
-                var ttp=0;
-                if (but.subMenu)
-                 subM=but.subMenu.map(
-                   (a,i)=>  {
-                     var nn="";
-                     if(this.animacoes[a.nome]===undefined)
-                        {
-                          ttp=top
-                          this.animacoes[a.nome]={"delta":0.0}
-                           this.animacoes["anim"]="down"
-
-                        }
-                     else{
-                       nn=a.nome.slice(0,Math.floor(this.animacoes[a.nome].delta/15))
-                        if(this.animacoes[a.nome].delta<60)
-                        {
-                          ttp=top+this.animacoes[a.nome].delta
-
-                         if(this.animacoes.anim=="down")
-                          this.animacoes[a.nome].delta= this.animacoes[a.nome].delta+0.3
-
-                          if(this.animacoes.anim=="up")
-                           this.animacoes[a.nome].delta= this.animacoes[a.nome].delta-0.3
-
-
-                        }
-                        else{
-                          nn=a.nome
-                          ttp=top+this.animacoes[a.nome].delta
-                        }
-                     }
-                     return ( <div style={{position: "absolute",
-                    top: (ttp+(64*i))+"px",
-                    left: left+"px",
-                    backgroundColor: cor,
-                    width: this.animacoes[a.nome].delta+"px",
-                    height: "48px",
-                    textAlign: "center"
-                  }}>{nn}{/*i*/}</div>)
-                })
-
-            }else
-          // button is not hot, but it may be active
-           cor="blue"
-        }
+        }else
+        // button is not hot, but it may be active
+        cor="blue"
+      }
 
 
       return(
         <div>
-         <div style={{position: "absolute",
-         top: top+"px",
-         left: left+"px",
-         backgroundColor: cor,
-         width: 64+"px",
-         height: "48px",
-         textAlign: "center"
-         }}>{num}</div>
-       {subM}
-     </div>)
+          <div style={{position: "absolute",
+            top: top+"px",
+            left: left+"px",
+            backgroundColor: cor,
+            width: 64+"px",
+            height: "48px",
+            textAlign: "center"
+          }}>{num}</div>
+          {subM}
+        </div>)
     }
 
      desenhaCanvas(){
@@ -398,7 +381,6 @@ export default class Home extends React.Component {
 
   desenhaCena(){
     var {error,div}=this.desenhaMenu();
-
     if(error){
       return( <div> wefwfe   {this.desenhaCanvas()}
            {div}

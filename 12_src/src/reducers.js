@@ -38,25 +38,28 @@ export function _time(state = initialTimeState, action) {
 }
 
 
-export function mouseReducer(state = {mousex: 0,mousey:0}, action) {
+export function mouseReducer(state = {mousex: 0,mousey:0, date:0}, action) {
   //  console.log('userReducer was called with state', state, 'and action', action)
 
     switch (action.type) {
           case 'MOUSE_MOVE':
             return {
               ...state,
+              date: action.date,
               mousex: action.value_x,
               mousey: action.value_y
             }
           case 'MOUSE_DOWN':
             return {
               ...state,
+              date: action.date,
               mousedown: true,
               mouseup: false
             }
           case 'MOUSE_UP':
             return {
               ...state,
+              date: action.date,
               mousedown: false,
               mouseup: true
             }
@@ -99,13 +102,13 @@ export function pagina(state =
         {
           type:"Butao",
           nome:"a",
-          y:400,
+          y:200,
           x:267
         },
         {
           type:"Butao",
           nome:"b",
-          y:400,
+          y:250,
           x:336,
           subMenu:[
             {nome:"ioio"},
@@ -115,13 +118,13 @@ export function pagina(state =
         {
           type:"Butao",
           nome:"c",
-          y:400,
+          y:300,
           x:410
         },
         {
           type:"Butao",
           nome:1,
-          y:400,
+          y:450,
           x:476
         }
     ]
