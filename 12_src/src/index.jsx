@@ -173,8 +173,7 @@ const WORLD_FRICTION = .77
 looper(() => {
   particles = particles.map((p,i) =>{
     return  update(p, WORLD_FRICTION)})
-
-  store.dispatch( {type:'PARTICLES', particule: particles})
+      store.dispatch( {type:'PARTICLES', particule: particles})
 })()
 
 
@@ -197,7 +196,7 @@ corners = [[100,100], [400,100], [400,400], [100,400]]
 looper(() => {
   particles = particles.map(p => {
     // find directional difference b/w mouse and this particle
-    let dir = sub([store.getState().mouseReducer.mousex,store.getState().mouseReducer.mousey], p.position)
+    let dir = sub([store.getState().mouseReducer.mousex[0].pos,store.getState().mouseReducer.mousey], p.position)
     // normalize it (make the unit length 1)
     dir = normalize(dir)
     // apply movement to the particle in the direction of the mouse

@@ -61,9 +61,9 @@ export default class Home extends React.Component {
       //   }
     }
 
-    if (uistate.mousex < x ||
+    if (uistate.mousex[0].pos < x ||
       uistate.mousey < y ||
-      uistate.mousex >= x + w ||
+      uistate.mousex[0].pos >= x + w ||
       uistate.mousey >= y + h)
       return false;
       return true;
@@ -80,71 +80,49 @@ export default class Home extends React.Component {
       console.log(vv);
       this.renderer = new PIXI.WebGLRenderer(800, 600,{ view:vv,  transparent : true});
       let vv2=      document.getElementById("identdois")//   ReactDom.findDOMNode(this.refs.canvas);
-
       this.renderer2 = new PIXI.WebGLRenderer(800, 600,{ view:vv2,  transparent : true});
 
       var zombieTexture = PIXI.Texture.fromImage('http://localhost:5984/geoj/zombie_img/05.png');
+      //"http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png";
 
-      // Teste de truque para colisao --NAO FUNCIONA
-      // ver pahser pixelperfect collision
-      // var maskSource = document.createElement("canvas");
-      // maskSource.width = 1140;
-      //  maskSource.height = 800;
-      // var context = maskSource.getContext("2d");
-      // var img = new Image();
-      // img.setAttribute('crossOrigin', 'anonymous');
-      // img.onload = function () {
-      //     context.drawImage(img, 0, 0);
-      // }
-      // img.src = "http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png";
-
-    var zombie = new PIXI.Sprite(zombieTexture);
-
+      var zombie = new PIXI.Sprite(zombieTexture);
 
       this.stage2 = new PIXI.Container();
 
       var graphics2 = new PIXI.Graphics();
       graphics2.lineStyle(80, 0x0000FF, 0.7);
       graphics2.moveTo(320,200);
-      graphics2.lineTo(30,234);
-      this.stage2.addChild(graphics2)
-      this.tesoura.push( graphics2);
+      // graphics2.lineTo(30,234);
+      // this.stage2.addChild(graphics2)
+      // this.tesoura.push( graphics2);
       var graphics3 = new PIXI.Graphics();
       graphics3.lineStyle(80, 0x30FF00, 1);
       graphics3.moveTo(820,800);
       graphics3.lineTo(30,234);
-      this.stage2.addChild(graphics3)
-      this.tesoura.push( graphics3);
-      this.tesoura.push( graphics3);
+  //    this.stage2.addChild(graphics3)
+    //  this.tesoura.push( graphics3);
+    //  this.tesoura.push( graphics3);
       this.stage2.addChild(zombie);
 
       document.body.appendChild(this.renderer2.view);
 
-
-
       for (var i = 0; i < this.props.reduxState.particReducer.length; i++){
-          let graphics = new PIXI.Graphics();
-          graphics.lineStyle(40, 0Xe7f418, 0.10);
-          graphics.moveTo(-20,0);
-          graphics.lineTo(30,0);
-          this.stage.addChild( graphics);
-          this.bunnys.push( graphics);
-
+        let graphics = new PIXI.Graphics();
+        graphics.lineStyle(40, 0Xe7f418, 0.10);
+        graphics.moveTo(-20,0);
+        graphics.lineTo(30,0);
+        this.stage.addChild( graphics);
+        this.bunnys.push( graphics);
       }
-
       document.body.appendChild(this.renderer.view);
-
   }
 
   componentDidUpdate(){
 
     var uistate=this.props.reduxState.mouseReducer;
-
-    //console.log(this.props.reduxState.particReducer);
-    var tt=this.props.reduxState.particReducer.map((p,i)=>{
-      // console.log(p.position.toString() );
+    this.props.reduxState.particReducer.for
+    this.props.reduxState.particReducer.forEach((p,i)=>{
       let [x,y] = [p.position[0] , p.position[1]]
-
       let xi= (((i+3)*2+100)%125)+100
       //  if(xi<100) xi=xi+80
       let mi=  (p.mass*2).toFixed(0)-20
@@ -189,11 +167,10 @@ export default class Home extends React.Component {
       this.height=[]
   };
 
-  desenhaButao(but){
+  desenhaButao(but,uistate){
     var num= but.nome;
     var top = but.y;
     var left= but.x;
-    var uistate=this.props.reduxState.mouseReducer;
     var subM=(<div/>)
 
     if (uistate.activeitem == num){
@@ -371,7 +348,7 @@ export default class Home extends React.Component {
      }
      else{
        var buts=reduxState.pagina[0].menu.map(
-         a=> this.desenhaButao(a)
+         a=> this.desenhaButao(a,reduxState.mouseReducer)
        )
        return(
          {error: true ,div:<div>{(buts)}</div>}

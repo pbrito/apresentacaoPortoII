@@ -38,16 +38,21 @@ export function _time(state = initialTimeState, action) {
 }
 
 
-export function mouseReducer(state = {mousex: 0,mousey:0, date:0}, action) {
+export function mouseReducer(state = {mousex: [{pos:0,date:0},{pos:0,date:0}],mousey:0, date:0}, action) {
   //  console.log('userReducer was called with state', state, 'and action', action)
 
     switch (action.type) {
           case 'MOUSE_MOVE':
+            let d1=state.mousex[0].date
+            if(action.date-state.mousex[0].date > 70)
             return {
               ...state,
-              date: action.date,
-              mousex: action.value_x,
+              date: state.date,
+              mousex:[ {pos: action.value_x,date:action.date},state.mousex[0],state.mousex[1]],
               mousey: action.value_y
+            }
+            else {
+              return state
             }
           case 'MOUSE_DOWN':
             return {
