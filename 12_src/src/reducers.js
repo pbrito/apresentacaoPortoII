@@ -38,10 +38,30 @@ export function _time(state = initialTimeState, action) {
 }
 
 
-export function mouseReducer(state = {mousex: [{pos:0,date:0},{pos:0,date:0}],mousey:0, date:0}, action) {
+export function mouseReducer(
+                    state = {
+                      mousex: [{pos:0,date:0},{pos:0,date:0}],
+                      mousey:0,
+                      date:0,
+                      pagina:"paginaA"
+                    },
+                    action) {
   //  console.log('userReducer was called with state', state, 'and action', action)
 
     switch (action.type) {
+      case 'LISTA':
+
+        if(action.lista.length > 1)
+         {
+           let l=action.lista;
+           let p=l.pop();
+          mouseReducer(mouseReducer(p),l)
+        }
+        else {
+          return mouseReducer(state,action.lista[0])
+        }
+
+
           case 'MOUSE_MOVE':
             let d1=state.mousex[0].date
             if(action.date-state.mousex[0].date > 70)
@@ -61,30 +81,36 @@ export function mouseReducer(state = {mousex: [{pos:0,date:0},{pos:0,date:0}],mo
               mousedown: true,
               mouseup: false
             }
-          case 'MOUSE_UP':
+            case 'MOUSE_UP':
             return {
               ...state,
               date: action.date,
               mousedown: false,
               mouseup: true
             }
-          case 'HOT_ITEM':
+            case 'HOT_ITEM':
             return {
               ...state,
               hotitem : action.id
             }
             case 'ACTIVE_ITEM':
+            return {
+              ...state,
+              activeitem :action.id
+            }
+            case 'COLOR_CHANGE':
+            return {
+              ...state,
+              color: action.color
+
+            }
+            case 'GO_TO_PAGE':
+            console.log("dddddkdkkdkdkdkdkddk");
               return {
                 ...state,
-                activeitem :action.id
+                pagina: action.pagina,
               }
-              case 'COLOR_CHANGE':
-                return {
-                  ...state,
-                  color: action.color
-
-                }
-          default:
+            default:
             return state;
     }
 }
@@ -100,41 +126,71 @@ export function particReducer(state = [{position:[0,0],accel:0,velocity:0,mass:0
       return state
   }
 }
-export function pagina(state =
-  [
-    {menu:
-      [
-        {
-          type:"Butao",
-          nome:"a",
-          y:200,
-          x:267
-        },
-        {
-          type:"Butao",
-          nome:"b",
-          y:250,
-          x:336,
-          subMenu:[
-            {nome:"ioio"},
-            {nome:"jyed"},
-          ]
-        },
-        {
-          type:"Butao",
-          nome:"c",
-          y:300,
-          x:410
-        },
-        {
-          type:"Butao",
-          nome:1,
-          y:450,
-          x:476
-        }
-    ]
+export function siteApp(state =
+  {  paginaA:{
+    content:[
+      {menu:
+        [
+          {
+            type:"Butao",
+            nome:"a",
+            y:200,
+            x:267
+          },
+          {
+            type:"Butao",
+            nome:"b",
+            y:250,
+            x:336,
+            paginaDestino:"paginaB",
+            subMenu:[
+              {nome:"ioio"},
+              {nome:"jyed"},
+            ]
+          },
+          {
+            type:"Butao",
+            nome:"c",
+            y:300,
+            x:410
+          },
+          {
+            type:"Butao",
+            nome:1,
+            y:450,
+            x:476
+          }
+        ]
+      }
+    ]},
+    paginaB:{
+     content:[
+       {menu:
+         [
+           {
+             type:"Butao",
+             nome:"retorna A",
+               paginaDestino:"paginaA",
+             y:200,
+             x:267
+           },
+           {
+             type:"Butao",
+             nome:"bfrf",
+             y:250,
+             x:336,
+             subMenu:[
+               {nome:"ss"},
+               {nome:"ff"},
+             ]
+           }
+         ]
+       }
+     ]}
+
+
   }
-                          ], action) {
+                          , action) {
   switch (action.type) {
     default:
       return state

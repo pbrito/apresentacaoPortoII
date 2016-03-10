@@ -16,13 +16,15 @@ import * as actionCreators from './action-creators'
     }
 })
 
+
+
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.renderer =null
     this.renderer2=null;
     this.stage = new PIXI.Container();
-    this.stage2 = null;
+    this.backgroundContainer = null;
     this.height =[];
     this.bunnys=[];
     //elementos da animacao em background
@@ -74,35 +76,44 @@ export default class Home extends React.Component {
     else {  return ((r << 16) | (g << 8) | b).toString(16);}
   }
 
+
+  desenhaBackground( numBack ) {
+
+    var zombieTexture
+    if(numBack==1) zombieTexture= PIXI.Texture.fromImage('http://localhost:5984/geoj/zombie_img/05.png');
+    else zombieTexture = PIXI.Texture.fromImage('http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png');
+    //"http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png";
+
+    var zombie = new PIXI.Sprite(zombieTexture);
+    this.backgroundContainer.removeChildren(0)
+    this.backgroundContainer.addChild(zombie);
+
+ };
   componentDidMount(){
 
-      let vv=      document.getElementById("ident")//   ReactDom.findDOMNode(this.refs.canvas);
+      let vv=   document.getElementById("ident")//   ReactDom.findDOMNode(this.refs.canvas);
       console.log(vv);
       this.renderer = new PIXI.WebGLRenderer(800, 600,{ view:vv,  transparent : true});
       let vv2=      document.getElementById("identdois")//   ReactDom.findDOMNode(this.refs.canvas);
       this.renderer2 = new PIXI.WebGLRenderer(800, 600,{ view:vv2,  transparent : true});
 
-      var zombieTexture = PIXI.Texture.fromImage('http://localhost:5984/geoj/zombie_img/05.png');
-      //"http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png";
 
-      var zombie = new PIXI.Sprite(zombieTexture);
 
-      this.stage2 = new PIXI.Container();
+      this.backgroundContainer = new PIXI.Container();
 
       var graphics2 = new PIXI.Graphics();
       graphics2.lineStyle(80, 0x0000FF, 0.7);
       graphics2.moveTo(320,200);
       // graphics2.lineTo(30,234);
-      // this.stage2.addChild(graphics2)
+      // this.backgroundContainer.addChild(graphics2)
       // this.tesoura.push( graphics2);
       var graphics3 = new PIXI.Graphics();
       graphics3.lineStyle(80, 0x30FF00, 1);
       graphics3.moveTo(820,800);
       graphics3.lineTo(30,234);
-  //    this.stage2.addChild(graphics3)
+  //    this.backgroundContainer.addChild(graphics3)
     //  this.tesoura.push( graphics3);
     //  this.tesoura.push( graphics3);
-      this.stage2.addChild(zombie);
 
       document.body.appendChild(this.renderer2.view);
 
@@ -120,14 +131,20 @@ export default class Home extends React.Component {
   componentDidUpdate(){
 
     var uistate=this.props.reduxState.mouseReducer;
-    this.props.reduxState.particReducer.for
+
+    let pgX= this.props.reduxState.mouseReducer.pagina;
+
+  //   if(pgX=="paginaB")
+  // this.desenhaBackground( 1)
+  // else this.desenhaBackground( 2)
+
     this.props.reduxState.particReducer.forEach((p,i)=>{
       let [x,y] = [p.position[0] , p.position[1]]
       let xi= (((i+3)*2+100)%125)+100
       //  if(xi<100) xi=xi+80
       let mi=  (p.mass*2).toFixed(0)-20
       let zi= (mi*xi+20)%255
-      // console.log(mi);
+      // a lista de bynnys retorna um que  vai ser tratado agora
       var bunny = this.bunnys[i];
       // bunny.rotation += 0.01;
       bunny.position.x = x;
@@ -155,15 +172,12 @@ export default class Home extends React.Component {
     })
 
     this.renderer.render(this.stage);
-    this.renderer2.render(this.stage2);
-    if(this.height.length>1)
-    {
-      this.props.dispatch(this.height[this.height.length-1])
+    this.renderer2.render(this.backgroundContainer);
+    //if(this.height.length!==0)console.log(this.height);
+    for (var i = 0; i < this.height.length; i++) {
+      this.props.dispatch(this.height[i])
     }
-    else {
-      if(this.height[0]){
-        this.props.dispatch(this.height[0])}
-      }
+
       this.height=[]
   };
 
@@ -176,7 +190,25 @@ export default class Home extends React.Component {
     if (uistate.activeitem == num){
       if (uistate.mouseup){
         if(uistate.hotitem==num )  {
-          alert("click")
+          let pgX= this.props.reduxState.mouseReducer.pagina;
+
+          let escP=(this.props.reduxState.siteApp[pgX].content[0].menu
+            .filter(function(a){if(a.nome==uistate.hotitem) return a })
+          );
+
+          if(uistate.hotitem)
+          {
+            if (escP[0].paginaDestino!==undefined) {
+              this.height.push( {
+                type: 'GO_TO_PAGE', pagina: escP[0].paginaDestino
+              })
+            }
+          }
+          else {
+
+            alert("click no botao  \n\t"+uistate.hotitem)
+
+          }
         }
         // set notActive
         if(uistate.activeitem!==0 )
@@ -236,7 +268,11 @@ export default class Home extends React.Component {
       {// Button is merely 'hot'
         cor="green"
         var ttp=0;
-        if (but.subMenu)
+        var velocit=
+        Math.abs(this.props.reduxState.mouseReducer.mousex[0].pos
+          -this.props.reduxState.mouseReducer.mousex[2].pos)
+          // console.log(velocit);
+        if (but.subMenu && velocit <40)
         subM=but.subMenu.map(
           (a,i)=>  {
             var nn="";
@@ -331,12 +367,14 @@ export default class Home extends React.Component {
 
     var erro= false;
     var {reduxState } = this.props;
+    //console.log(this.props.reduxState.mouseReducer.pagina);
+    let pgX= this.props.reduxState.mouseReducer.pagina;
 
     //test de overlaping Só testa o 2 com o 3
-    var a=reduxState.pagina[0].menu[2]
-    var b=reduxState.pagina[0].menu[3]
-    var bo=this.doOverlap({y:a.y,x:a.x,width: 64,height: 48},
-                            {y:b.y,x:b.x,width: 64,height: 48})
+    var a=reduxState.siteApp[pgX].content[0].menu[2]
+    var b=reduxState.siteApp[pgX].content[0].menu[3]
+    var bo= false;//this.doOverlap({y:a.y,x:a.x,width: 64,height: 48},
+                    //        {y:b.y,x:b.x,width: 64,height: 48})
     // fim teste
 
     if(bo){
@@ -347,7 +385,7 @@ export default class Home extends React.Component {
       )
      }
      else{
-       var buts=reduxState.pagina[0].menu.map(
+       var buts=reduxState.siteApp[pgX].content[0].menu.map(
          a=> this.desenhaButao(a,reduxState.mouseReducer)
        )
        return(
@@ -357,6 +395,7 @@ export default class Home extends React.Component {
   }
 
   desenhaCena(){
+
     var {error,div}=this.desenhaMenu();
     if(error){
       return( <div> wefwfe   {this.desenhaCanvas()}
@@ -396,6 +435,7 @@ export default class Home extends React.Component {
 
 
   render () {
+
 
     // Thanks to our @connect decorator, we're able to get the data previously selected through the props.
     var { frozen, time, reduxState } = this.props
@@ -455,13 +495,12 @@ export default class Home extends React.Component {
         <pre>
           redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
           redux state = { JSON.stringify(reduxState._time, null, 2) }
-          redux state = { JSON.stringify(reduxState.pagina, null, 2) }
+          redux state = { JSON.stringify(reduxState.siteApp, null, 2) }
 
  { /*  redux state =JSON.stringify(reduxState, null, 2) */}
 
         </pre>
         {this.desenhaCena()}
-        {/*tt*/}
       </div>
     )
   }

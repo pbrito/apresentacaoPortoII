@@ -9,6 +9,7 @@ import { render } from 'react-dom'
 import createStore from './create-store'
 // Application is the root component of our application and the one that holds Redux's Provider...
 import Application from './application'
+import {box,update,sub,normalize,applyForce,looper} from './particle.js'
 
 // Just as we did so many times in previous examples, we need to create our redux instance. This time
 // all code for that task was moved to a specific module that returns a single function to trigger the
@@ -67,104 +68,6 @@ document.onmouseup = function(e) {
 }
 
 
-const random = (min=0, max=400) =>
-Math.random()*(max-min)+min
-
-
-const vector = (x=random(),y=random()) => [x,y]
-
-const degToRad = deg => deg * Math.PI / 180
-
-const radToDeg = rad => rad*180 / Math.PI
-
-const add = (...vx) =>
-vx.reduce((a, v) =>
-[a[0] + v[0], a[1] + v[1]], [0,0])
-
-const sub = (...vx) =>
-vx.reduce((a, v) =>
-[a[0] - v[0], a[1] - v[1]])
-
-const scale = ([x,y],n) =>
-[n * x, n * y]
-
-const dot = ([x1,y1],[x2,y2]) =>
-x1*x2 + y1*y2
-
-const rotate = ([x,y],deg) => {
-  let r = degToRad(deg),
-  [cos, sin] = [Math.cos(r), Math.sin(r)]
-  return [cos*x - sin*y, sin*x + cos*y]
-}
-
-const normalize = v => scale(v,1/(mag(v) || 1))
-
-const mag = ([x,y]) => Math.sqrt(x*x + y*y)
-
-const dist = ([x1,y1], [x2,y2]) =>
-Math.sqrt(Math.pow(x2-x1,2) + Math.pow(y2-y1,2))
-
-const heading = (v) => {
-  let angle = angleBetween(v,[0,-1*mag(v)])
-  return v[0] < 0 ? 360-angle : angle
-}
-
-const angleBetween = (v1,v2) =>
-radToDeg(Math.acos( dot(v1,v2) / (mag(v1)*mag(v2)) ))
-
-const particle = (
-  position=vector(),
-  velocity=vector(),
-  accel=vector()
-) => {
-  return {accel, velocity, position}
-}
-
-
-// GIVE ME THE JUICE!
-//
-// update, now with more acceleration.
-//
-// velocity += accel_______
-// velocity *= 1-friction _|---> part a
-// position += velocity--------> part b
-
-const update = (p, friction) => {
-  let [[px,py], [vx,vy], [ax,ay]] = [p.position, p.velocity, p.accel]
-  vx = (vx+ax) * (1-friction)
-  vy = (vy+ay) * (1-friction)
-  let position = [px + vx, py + vy],
-  accel = [0,0],
-  velocity = [vx,vy]
-  return { ...p, position, accel, velocity }
-}
-
-// force = m*a
-const applyForce = (p, m, a) => {
-  let {accel} = p
-  accel = add(accel, scale(a,m))
-  return { ...p, accel }
-}
-
-
-const looper = fn => {
-  let cb = (time) => {
-    requestAnimationFrame(cb)
-    let diff = ~~(time - (cb.time || 0)),
-    seconds_passed = diff/1000
-    fn(seconds_passed)
-    cb.time = time
-  }
-  return cb
-}
-
-
-
-
-const box = (mass=random(1,50)) => {
-  return {...particle(), mass }
-}
-
 let particles = Array(46).fill(true).map(_ => box())
 
 // painting loop
@@ -193,16 +96,16 @@ corners = [[100,100], [400,100], [400,400], [100,400]]
 
 
 // chase the mouse by continually applying/adjusting force to each particle
-looper(() => {
-  particles = particles.map(p => {
-    // find directional difference b/w mouse and this particle
-    let dir = sub([store.getState().mouseReducer.mousex[0].pos,store.getState().mouseReducer.mousey], p.position)
-    // normalize it (make the unit length 1)
-    dir = normalize(dir)
-    // apply movement to the particle in the direction of the mouse
-    return applyForce(p, p.mass, dir) //<-- use the mass
-  })
-})()
+// looper(() => {
+//   particles = particles.map(p => {
+//    // find directional difference b/w mouse and this particle
+//     let dir = sub([store.getState().mouseReducer.mousex[0].pos,store.getState().mouseReducer.mousey], p.position)
+//     // normalize it (make the unit length 1)
+//     dir = normalize(dir)
+//     // apply movement to the particle in the direction of the mouse
+//     return applyForce(p, p.mass, dir) //<-- use the mass
+//   })
+// })()
 
 
 
