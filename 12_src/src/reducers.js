@@ -42,28 +42,44 @@ export function mouseReducer(
                     state = {
                       mousex: [{pos:0,date:0},{pos:0,date:0}],
                       mousey:0,
+                      //date=> dateClick
                       date:0,
+                      transicoes:{
+                        //type:  start:  ended:  duration: paginaStart: paginaEnd
+                      },
                       pagina:"paginaA"
                     },
                     action) {
   //  console.log('userReducer was called with state', state, 'and action', action)
 
     switch (action.type) {
-      case 'LISTA':
 
-        if(action.lista.length > 1)
-         {
-           let l=action.lista;
-           let p=l.pop();
-          mouseReducer(mouseReducer(p),l)
+      case 'START_TRANSICAO':
+
+        return {
+          ...state,
+          date: state.date,
+          transicoes:{
+            type: action.transicaoType,
+            start: action.start,
+            ended :false,
+            duration: 10,
+            paginaStart:  action.paginaStart,
+            paginaEnd: action.paginaEnd
+
+          }
         }
-        else {
-          return mouseReducer(state,action.lista[0])
+
+        /*
+        return {
+          type: 'MOUSE_MOVE',
+          date: date,
+          value_y: e.pageY,
+          value_x: e.pageX
         }
-
-
+        */
           case 'MOUSE_MOVE':
-            let d1=state.mousex[0].date
+            //let d1=state.mousex[0].date
             if(action.date-state.mousex[0].date > 70)
             return {
               ...state,
@@ -105,7 +121,6 @@ export function mouseReducer(
 
             }
             case 'GO_TO_PAGE':
-            console.log("dddddkdkkdkdkdkdkddk");
               return {
                 ...state,
                 pagina: action.pagina,
@@ -129,7 +144,10 @@ export function particReducer(state = [{position:[0,0],accel:0,velocity:0,mass:0
 export function siteApp(state =
   {  paginaA:{
     content:[
-      {menu:
+      {
+        background : 'http://localhost:5984/geoj/zombie_img/05.png',
+        backgroundColor: 0xff80ac,
+        menu:
         [
           {
             type:"Butao",
@@ -165,7 +183,11 @@ export function siteApp(state =
     ]},
     paginaB:{
      content:[
-       {menu:
+       {
+         background:'http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png',
+         backgroundColor: 0x6ad6b2,// 0xdddddd 0x51225e 0xc6e2ff 0x3f88c5 0xf6f7eb
+
+         menu:
          [
            {
              type:"Butao",

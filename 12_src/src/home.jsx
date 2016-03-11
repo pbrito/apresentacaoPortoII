@@ -77,16 +77,58 @@ export default class Home extends React.Component {
   }
 
 
-  desenhaBackground( numBack ) {
+  desenhaBackground(  ) {
+    var zombieTexture;
+    //segundos data a b -- Math.floor((b-a)/1000)
 
-    var zombieTexture
-    if(numBack==1) zombieTexture= PIXI.Texture.fromImage('http://localhost:5984/geoj/zombie_img/05.png');
-    else zombieTexture = PIXI.Texture.fromImage('http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png');
-    //"http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png";
+let strTr=(this.props.reduxState.mouseReducer.transicoes.start);
+let difT=(new Date())-strTr
+let actD=Math.floor((difT)/1000)
+if (strTr!==undefined && actD < this.props.reduxState.mouseReducer.transicoes.duration)
+
+{
+    let pgX= this.props.reduxState.mouseReducer.pagina;
+    let backP=(this.props.reduxState.siteApp[pgX].content[0].background)
+    let backCl=(this.props.reduxState.siteApp[pgX].content[0].backgroundColor)
+    zombieTexture= PIXI.Texture.fromImage(backP);
+
+    var back = new PIXI.Graphics();
+    back.beginFill( backCl, 1)
+    back.drawRect(0,0,900,1500)
 
     var zombie = new PIXI.Sprite(zombieTexture);
-    this.backgroundContainer.removeChildren(0)
-    this.backgroundContainer.addChild(zombie);
+    if((this.backgroundContainer.children.length)>0){
+      this.backgroundContainer.removeChildren(0);
+    }
+    else{
+
+    }
+    var backz = new PIXI.Graphics();
+    this.backgroundContainer.addChildAt(backz,0);
+    this.backgroundContainer.addChildAt(back,1);
+    zombie.position.x=100;
+    this.backgroundContainer.addChildAt(zombie, 2);
+
+    var thing = new PIXI.Graphics();
+
+
+
+    this.backgroundContainer.addChildAt(thing,3);
+
+    thing.clear();
+
+    var uX=this.props.reduxState.mouseReducer.mousex[0].pos
+    var uY=this.props.reduxState.mouseReducer.mousey
+    let count=uX;
+    thing.beginFill(0x8bc5ff, 0.4);
+    thing.drawCircle(uX,uY, difT)
+
+
+
+    this.backgroundContainer.mask = thing;
+
+    }
+
 
  };
   componentDidMount(){
@@ -131,12 +173,8 @@ export default class Home extends React.Component {
   componentDidUpdate(){
 
     var uistate=this.props.reduxState.mouseReducer;
-
     let pgX= this.props.reduxState.mouseReducer.pagina;
-
-  //   if(pgX=="paginaB")
-  // this.desenhaBackground( 1)
-  // else this.desenhaBackground( 2)
+    this.desenhaBackground( )
 
     this.props.reduxState.particReducer.forEach((p,i)=>{
       let [x,y] = [p.position[0] , p.position[1]]
@@ -202,6 +240,14 @@ export default class Home extends React.Component {
               this.height.push( {
                 type: 'GO_TO_PAGE', pagina: escP[0].paginaDestino
               })
+              this.height.push( {
+                type: 'START_TRANSICAO',
+                 transicaoType: "circle",
+                start: new Date(),
+                paginaStart:  pgX,
+                paginaEnd: escP[0].paginaDestino
+              })
+
             }
           }
           else {
