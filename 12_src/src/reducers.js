@@ -64,6 +64,10 @@ export function mouseReducer(
             start: action.start,
             ended :false,
             duration: 10,
+            mouse:{
+              x:action.x ,
+              y:action.y
+            },
             paginaStart:  action.paginaStart,
             paginaEnd: action.paginaEnd
 
@@ -146,7 +150,7 @@ export function siteApp(state =
     content:[
       {
         background : 'http://localhost:5984/geoj/zombie_img/05.png',
-        backgroundColor: 0xff80ac,
+        backgroundColor: 0x51225e,
         menu:
         [
           {
@@ -185,7 +189,7 @@ export function siteApp(state =
      content:[
        {
          background:'http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png',
-         backgroundColor: 0x6ad6b2,// 0xdddddd 0x51225e 0xc6e2ff 0x3f88c5 0xf6f7eb
+         backgroundColor: 0x3f88c5,// 0xdddddd 0x51225e 0xc6e2ff 0x3f88c5 0xf6f7eb
 
          menu:
          [
@@ -193,14 +197,14 @@ export function siteApp(state =
              type:"Butao",
              nome:"retorna A",
                paginaDestino:"paginaA",
-             y:200,
-             x:267
+             y:100,
+             x:167
            },
            {
              type:"Butao",
              nome:"bfrf",
-             y:250,
-             x:336,
+             y:150,
+             x:436,
              subMenu:[
                {nome:"ss"},
                {nome:"ff"},
