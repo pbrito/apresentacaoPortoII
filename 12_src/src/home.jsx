@@ -21,7 +21,7 @@ import * as actionCreators from './action-creators'
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
-    this.renderer =null
+  //  this.renderer =null
     this.renderer2=null;
     this.stage = new PIXI.Container();
     this.backgroundContainer = null;
@@ -84,20 +84,36 @@ export default class Home extends React.Component {
 
     let strTr=(this.props.reduxState.mouseReducer.transicoes.start);
     let difT=(new Date())-strTr
-    let actD=Math.floor((difT)/50)
+    let actD=Math.floor((difT)/70)
 
-    if (strTr!==undefined && actD == this.props.reduxState.mouseReducer.transicoes.duration ){
-      
-
-
-      let pgX= this.props.reduxState.mouseReducer.pagina;
+    if (strTr===undefined  ){
+      let pgX= this.props.reduxState.mouseReducer.pagina.id;
       let backP=(this.props.reduxState.siteApp[pgX].content[0].background)
       let backCl=(this.props.reduxState.siteApp[pgX].content[0].backgroundColor)
       zombieTexture= PIXI.Texture.fromImage(backP);
       var zombie = new PIXI.Sprite(zombieTexture);
       var back = new PIXI.Graphics();
       back.beginFill( backCl, 1)
-      back.drawRect(0,0,900,1500)
+      back.drawRect(0,0,900,800)
+      zombie.position.x=100;
+      zombie.position.y=100;
+      this.backgroundContainerOld.addChild(back);
+      this.backgroundContainerOld.addChild(zombie);
+      this.renderer2.render(this.backgroundContainerOld);
+
+    }
+    if (strTr!==undefined && actD == this.props.reduxState.mouseReducer.transicoes.duration ){
+
+
+
+      let pgX= this.props.reduxState.mouseReducer.pagina.id;
+      let backP=(this.props.reduxState.siteApp[pgX].content[0].background)
+      let backCl=(this.props.reduxState.siteApp[pgX].content[0].backgroundColor)
+      zombieTexture= PIXI.Texture.fromImage(backP);
+      var zombie = new PIXI.Sprite(zombieTexture);
+      var back = new PIXI.Graphics();
+      back.beginFill( backCl, 1)
+      back.drawRect(0,0,900,800)
       zombie.position.x=100;
       zombie.position.y=100;
       this.backgroundContainerOld.addChild(back);
@@ -109,14 +125,14 @@ export default class Home extends React.Component {
     if (strTr!==undefined && actD < this.props.reduxState.mouseReducer.transicoes.duration)
 
     {
-      let pgX= this.props.reduxState.mouseReducer.pagina;
+      let pgX= this.props.reduxState.mouseReducer.pagina.id;
       let backP=(this.props.reduxState.siteApp[pgX].content[0].background)
       let backCl=(this.props.reduxState.siteApp[pgX].content[0].backgroundColor)
       zombieTexture= PIXI.Texture.fromImage(backP);
 
       var back = new PIXI.Graphics();
       back.beginFill( backCl, 1)
-      back.drawRect(0,0,900,1500)
+      back.drawRect(0,0,900,800)
 
       var zombie = new PIXI.Sprite(zombieTexture);
       if((this.backgroundContainer.children.length)>0){
@@ -130,7 +146,7 @@ export default class Home extends React.Component {
       this.backgroundContainer.addChildAt(backz,0);
       this.backgroundContainer.addChildAt(back,1);
 
-      zombie.position.x=100;
+      zombie.position.x=100+500-(50*actD);
       zombie.position.y=100;
 
       this.backgroundContainer.addChildAt(zombie, 2);
@@ -163,85 +179,85 @@ export default class Home extends React.Component {
 
 
   };
+  componentWillMount(){
+    let vv2=      document.getElementById("identdois")//   ReactDom.findDOMNode(this.refs.canvas);
+    this.renderer2 = new PIXI.WebGLRenderer(1400, 600,{ view:vv2,  transparent : true});
+    //define a pagina que comeca que esta no model
+    let d1=new Date();
+    this.props.reduxState.mouseReducer.pagina={
+      time: d1,
+      id:this.props.reduxState.siteApp.start};
+  }
   componentDidMount(){
 
-      let vv=   document.getElementById("ident")//   ReactDom.findDOMNode(this.refs.canvas);
-      console.log(vv);
-      this.renderer = new PIXI.WebGLRenderer(800, 600,{ view:vv,  transparent : true});
+      // let vv=   document.getElementById("ident")//   ReactDom.findDOMNode(this.refs.canvas);
+      // this.renderer = new PIXI.WebGLRenderer(1400, 600,{ view:vv,  transparent : true});
       let vv2=      document.getElementById("identdois")//   ReactDom.findDOMNode(this.refs.canvas);
-      this.renderer2 = new PIXI.WebGLRenderer(800, 600,{ view:vv2,  transparent : true});
-
-
-
+      this.renderer2 = new PIXI.WebGLRenderer(1400, 600,{ view:vv2,  transparent : true});
       this.backgroundContainer = new PIXI.Container();
 
       var graphics2 = new PIXI.Graphics();
       graphics2.lineStyle(80, 0x0000FF, 0.7);
       graphics2.moveTo(320,200);
-      // graphics2.lineTo(30,234);
-      // this.backgroundContainer.addChild(graphics2)
-      // this.tesoura.push( graphics2);
+
       var graphics3 = new PIXI.Graphics();
       graphics3.lineStyle(80, 0x30FF00, 1);
       graphics3.moveTo(820,800);
       graphics3.lineTo(30,234);
-  //    this.backgroundContainer.addChild(graphics3)
-    //  this.tesoura.push( graphics3);
-    //  this.tesoura.push( graphics3);
 
       document.body.appendChild(this.renderer2.view);
 
-      for (var i = 0; i < this.props.reduxState.particReducer.length; i++){
-        let graphics = new PIXI.Graphics();
-        graphics.lineStyle(40, 0Xe7f418, 0.10);
-        graphics.moveTo(-20,0);
-        graphics.lineTo(30,0);
-        this.stage.addChild( graphics);
-        this.bunnys.push( graphics);
-      }
-      document.body.appendChild(this.renderer.view);
+      // for (var i = 0; i < this.props.reduxState.particReducer.length; i++){
+      //   let graphics = new PIXI.Graphics();
+      //   graphics.lineStyle(40, 0Xe7f418, 0.10);
+      //   graphics.moveTo(-20,0);
+      //   graphics.lineTo(30,0);
+      //   this.stage.addChild( graphics);
+      //   this.bunnys.push( graphics);
+      // }
+      //document.body.appendChild(this.renderer.view);
   }
 
   componentDidUpdate(){
 
     var uistate=this.props.reduxState.mouseReducer;
-    let pgX= this.props.reduxState.mouseReducer.pagina;
-    this.desenhaBackground( )
+    let pgX= this.props.reduxState.mouseReducer.pagina.id;
 
-    this.props.reduxState.particReducer.forEach((p,i)=>{
-      let [x,y] = [p.position[0] , p.position[1]]
-      let xi= (((i+3)*2+100)%125)+100
-      //  if(xi<100) xi=xi+80
-      let mi=  (p.mass*2).toFixed(0)-20
-      let zi= (mi*xi+20)%255
-      // a lista de bynnys retorna um que  vai ser tratado agora
-      var bunny = this.bunnys[i];
-      // bunny.rotation += 0.01;
-      bunny.position.x = x;
-      if(uistate.hotitem!=0)
-      {
-        if(uistate.hotitem==="c"){
-          bunny.tint= 0x000FF0;
-        }
-        else {
-          bunny.tint= 0XFFD4D5;
-        }
-      }
-      else {
-        this.animacoes={}
-        bunny.tint= 0Xf70FFF;
-      }
-      bunny.position.y = y;
-      var tesou = this.tesoura[0];
-      if (uistate.hotitem==0) {
-        //  tesou.rotation += 0.0001;
-      }
-      //if(i==1) console.log(bunny);
-      // bunny.moveTo(x,y);
-      let cor= "rgb("+mi+","+ xi+","+zi+")";
-    })
 
-    this.renderer.render(this.stage);
+    // this.props.reduxState.particReducer.forEach((p,i)=>{
+    //   let [x,y] = [p.position[0] , p.position[1]]
+    //   let xi= (((i+3)*2+100)%125)+100
+    //   //  if(xi<100) xi=xi+80
+    //   let mi=  (p.mass*2).toFixed(0)-20
+    //   let zi= (mi*xi+20)%255
+    //   // a lista de bynnys retorna um que  vai ser tratado agora
+    //   var bunny = this.bunnys[i];
+    //   // bunny.rotation += 0.01;
+    //   bunny.position.x = x;
+    //   if(uistate.hotitem!=0)
+    //   {
+    //     if(uistate.hotitem==="c"){
+    //       bunny.tint= 0x000FF0;
+    //     }
+    //     else {
+    //       bunny.tint= 0XFFD4D5;
+    //     }
+    //   }
+    //   else {
+    //     this.animacoes={}
+    //     bunny.tint= 0Xf70FFF;
+    //   }
+    //   bunny.position.y = y;
+    //   var tesou = this.tesoura[0];
+    //   if (uistate.hotitem==0) {
+    //     //  tesou.rotation += 0.0001;
+    //   }
+    //   //if(i==1) console.log(bunny);
+    //   // bunny.moveTo(x,y);
+    //   let cor= "rgb("+mi+","+ xi+","+zi+")";
+    // })
+
+  //  this.renderer.render(this.stage);
   //
 
     //if(this.height.length!==0)console.log(this.height);
@@ -261,7 +277,7 @@ export default class Home extends React.Component {
     if (uistate.activeitem == num){
       if (uistate.mouseup){
         if(uistate.hotitem==num )  {
-          let pgX= this.props.reduxState.mouseReducer.pagina;
+          let pgX= this.props.reduxState.mouseReducer.pagina.id;
 
           let escP=(this.props.reduxState.siteApp[pgX].content[0].menu
             .filter(function(a){if(a.nome==uistate.hotitem) return a })
@@ -444,12 +460,40 @@ export default class Home extends React.Component {
       return false;
     }
 
+    desenhaLayerText() {
+var nt=new Date()
+var nt2=nt-this.props.reduxState.mouseReducer.pagina.time;
+if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
+){
+     let vT=1300-(nt2);
+     if(vT<0) vT=0
+      let pgX= this.props.reduxState.mouseReducer.pagina.id;
+      var {reduxState } = this.props;
+      var  text=reduxState.siteApp[pgX].content[0].text
+      var sText= text.str;
+      let top=text.posy+100,left=text.posx+vT
+      return(
+      <div style={{
+        position: "absolute",
+        backgroundColor: "rgba(310, 510, 211, 0.6)",
+        paddingLeft: "10px",
+        paddingRight: "10px",
+        top: top+"px",
+        left: left+"px",
+        maxWidth: "450px"}}>
+        {text.str}
+        <h4> </h4>
+      </div>
+    )
+}
+   }
+
   desenhaMenu(){
 
     var erro= false;
     var {reduxState } = this.props;
     //console.log(this.props.reduxState.mouseReducer.pagina);
-    let pgX= this.props.reduxState.mouseReducer.pagina;
+    let pgX= this.props.reduxState.mouseReducer.pagina.id;
 
     //test de overlaping Só testa o 2 com o 3
     var a=reduxState.siteApp[pgX].content[0].menu[2]
@@ -458,29 +502,23 @@ export default class Home extends React.Component {
                     //        {y:b.y,x:b.x,width: 64,height: 48})
     // fim teste
 
-    if(bo){
-      return(
-        { error: true ,
-          div:this.desenhaTexto(300,200,"Please designers Learn some Math " )
-        }
-      )
-     }
-     else{
        var buts=reduxState.siteApp[pgX].content[0].menu.map(
          a=> this.desenhaButao(a,reduxState.mouseReducer)
        )
        return(
          {error: true ,div:<div>{(buts)}</div>}
        )
-     }
+
   }
 
   desenhaCena(){
 
+        this.desenhaBackground( )
     var {error,div}=this.desenhaMenu();
     if(error){
       return( <div> wefwfe   {this.desenhaCanvas()}
            {div}
+           {this.desenhaLayerText()}
            <canvas   style={{
                position:"absolute",
                top:"0",
@@ -497,8 +535,9 @@ export default class Home extends React.Component {
          )
     }
   else {
-      return  (  <div>wthyjuikjuhy {this.desenhaCanvas()}
+      return  (  <div>wth2345yjuikjuhy {this.desenhaCanvas()}
       {div}
+      {this.desenhaLayerText()}
       <canvas   style={{
           position:"absolute",
           top:"0",
@@ -516,7 +555,6 @@ export default class Home extends React.Component {
 
 
   render () {
-
 
     // Thanks to our @connect decorator, we're able to get the data previously selected through the props.
     var { frozen, time, reduxState } = this.props
@@ -557,8 +595,8 @@ export default class Home extends React.Component {
   //       return(<div key={i} style={style}>
   //
   //       </div>); } )
-
-    return (
+if(window.outerWidth>800)
+    {return (
       <div>
 
         <h1>Provider and @connect example</h1>
@@ -583,8 +621,37 @@ export default class Home extends React.Component {
         </pre>
         {this.desenhaCena()}
       </div>
-    )
+    )}
+    else {
+      return (
+        <div>
+
+          <h1>Provider and @connect example</h1>
+          <span>
+            <b>What time is it?</b>
+              <br/>
+               { time ? `It is currently ` : 'No idea yet...' }
+          <br/>
+             {time}
+          </span>
+          <br />
+          {/* We register our button handler here and use the experimental ES7 function's binding operator "::"
+              to have our handler to be bound to the component's instance. */}
+          <button { ...attrs } onClick={::this.onTimeButtonClick}>Get time!</button>
+          <pre>
+            redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
+            redux state = { JSON.stringify(reduxState._time, null, 2) }
+            redux state = { JSON.stringify(reduxState.siteApp, null, 2) }
+
+   { /*  redux state =JSON.stringify(reduxState, null, 2) */}
+
+          </pre>
+          
+        </div>
+      )
+
+
+
+    }
   }
 }
-
-// Go to ./13_final-words.js for our last advice about what to do now...

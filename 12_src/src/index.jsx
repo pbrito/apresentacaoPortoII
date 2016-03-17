@@ -33,6 +33,23 @@ document.onmousemove = function(e) {
 
 }
 
+document.onmouseleave = function(e) {
+
+  e = e || window.event
+
+  var mouseMoveCreator = function (name,date) {
+    return {
+      type: 'MOUSE_OUT',
+      date: date,
+      value_y: e.pageY,
+      value_x: e.pageX
+    }
+  }
+  store.dispatch(mouseMoveCreator('bob',new Date() ))
+
+}
+
+
 document.onmousedown = function(e) {
 
   e = e || window.event

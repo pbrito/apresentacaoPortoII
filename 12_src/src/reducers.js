@@ -47,7 +47,7 @@ export function mouseReducer(
                       transicoes:{
                         //type:  start:  ended:  duration: paginaStart: paginaEnd
                       },
-                      pagina:"paginaA"
+                      pagina:"{}"
                     },
                     action) {
   //  console.log('userReducer was called with state', state, 'and action', action)
@@ -101,6 +101,13 @@ export function mouseReducer(
               mousedown: true,
               mouseup: false
             }
+          case 'MOUSE_OUT':
+              return {
+                ...state,
+                date: action.date,
+                mousedown: false,
+                mouseup: false
+          }
             case 'MOUSE_UP':
             return {
               ...state,
@@ -125,9 +132,12 @@ export function mouseReducer(
 
             }
             case 'GO_TO_PAGE':
+            let d1=new Date()
               return {
                 ...state,
-                pagina: action.pagina,
+                pagina: {id:action.pagina,
+                  time: d1
+                }
               }
             default:
             return state;
@@ -146,23 +156,31 @@ export function particReducer(state = [{position:[0,0],accel:0,velocity:0,mass:0
   }
 }
 export function siteApp(state =
-  {  paginaA:{
-    content:[
+  {
+    start:"paginaA",
+    paginaA:{
+      content:[
       {
         background : 'http://localhost:5984/geoj/zombie_img/05.png',
-        backgroundColor: 0x51225e,
+        backgroundColor: 0xb6e589,
+        text:{
+          str: "We were certain of one principle, especially regarding computer programs with this extreme level of user sensitivity. It was a principle that the patterns people were actively rejecting.\
+        \nProgram structure should reflect the interaction with a user. Greg Bryant about Christopher Alexander ",
+          posx:300,
+          posy:200
+        },
         menu:
         [
           {
             type:"Butao",
             nome:"a",
-            y:200,
+            y:50,
             x:267
           },
           {
             type:"Butao",
             nome:"b",
-            y:250,
+            y:50,
             x:336,
             paginaDestino:"paginaB",
             subMenu:[
@@ -173,13 +191,13 @@ export function siteApp(state =
           {
             type:"Butao",
             nome:"c",
-            y:300,
+            y:50,
             x:410
           },
           {
             type:"Butao",
             nome:1,
-            y:450,
+            y:50,
             x:476
           }
         ]
@@ -189,21 +207,25 @@ export function siteApp(state =
      content:[
        {
          background:'http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png',
-         backgroundColor: 0x3f88c5,// 0xdddddd 0x51225e 0xc6e2ff 0x3f88c5 0xf6f7eb
-
+         backgroundColor: 0xffdeed,// 0xdddddd 0x51225e 0xc6e2ff 0x3f88c5 0xf6f7eb
+         text:{str:"If you’re targeting a web browser, the event loop is deeply built into browser’s execution model. There, the event loop will run the show, and you’ll use it as your game loop too. You’ll call something like requestAnimationFrame() \
+         and it will call back into your code to keep the game running.",
+         posx:300,
+         posy:100
+        },
          menu:
          [
            {
              type:"Butao",
              nome:"retorna A",
                paginaDestino:"paginaA",
-             y:100,
-             x:167
+             y:50,
+             x:267
            },
            {
              type:"Butao",
              nome:"bfrf",
-             y:150,
+             y:50,
              x:436,
              subMenu:[
                {nome:"ss"},
