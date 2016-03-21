@@ -166,14 +166,15 @@ export function siteApp(state =
         text:{
           str: "We were certain of one principle, especially regarding computer programs with this extreme level of user sensitivity. It was a principle that the patterns people were actively rejecting.\
         \nProgram structure should reflect the interaction with a user. Greg Bryant about Christopher Alexander ",
-          posx:300,
-          posy:200
+          posx:340,
+          posy:100
         },
         menu:
         [
           {
             type:"Butao",
             nome:"a",
+            paginaDestino:"paginaA",
             y:50,
             x:267
           },
@@ -190,12 +191,14 @@ export function siteApp(state =
           },
           {
             type:"Butao",
+             paginaDestino:"paginaC",
             nome:"c",
             y:50,
             x:410
           },
           {
             type:"Butao",
+             paginaDestino:"paginaD",
             nome:1,
             y:50,
             x:476
@@ -203,15 +206,15 @@ export function siteApp(state =
         ]
       }
     ]},
-    paginaB:{
+    paginaC:{
      content:[
        {
-         background:'http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png',
-         backgroundColor: 0xffdeed,// 0xdddddd 0x51225e 0xc6e2ff 0x3f88c5 0xf6f7eb
+         background:'http://localhost:5984/geoj/coffee_img/coffee-309981_960_720.png',
+         backgroundColor: 0x3f88c5,// 0xdddddd 0x51225e 0xc6e2ff 0x3f88c5 0xf6f7eb
          text:{str:"If you’re targeting a web browser, the event loop is deeply built into browser’s execution model. There, the event loop will run the show, and you’ll use it as your game loop too. You’ll call something like requestAnimationFrame() \
          and it will call back into your code to keep the game running.",
-         posx:300,
-         posy:100
+         posx:30,
+         posy:300
         },
          menu:
          [
@@ -221,12 +224,23 @@ export function siteApp(state =
                paginaDestino:"paginaA",
              y:50,
              x:267
+           },{
+             type:"Butao",
+             nome:"b",
+             y:50,
+             x:336,
+             paginaDestino:"paginaB",
+             subMenu:[
+               {nome:"ioio"},
+               {nome:"jyed"},
+             ]
            },
            {
              type:"Butao",
              nome:"bfrf",
+             paginaDestino:"paginaD",
              y:50,
-             x:436,
+             x:476,
              subMenu:[
                {nome:"ss"},
                {nome:"ff"},
@@ -234,7 +248,94 @@ export function siteApp(state =
            }
          ]
        }
-     ]}
+     ]},
+     paginaB:{
+      content:[
+        {
+          background:'http://127.0.0.1:5984/geoj/dados_img/PNG_transparency_demonstration_1.png',
+          backgroundColor: 0xffdeed,// 0xdddddd 0x51225e 0xc6e2ff 0x3f88c5 0xf6f7eb
+          text:{str:"If you’re targeting a web browser, the event loop is deeply built into browser’s execution model. There, the event loop will run the show, and you’ll use it as your game loop too. You’ll call something like requestAnimationFrame() \
+          and it will call back into your code to keep the game running.",
+          posx:30,
+          posy:300
+         },
+          menu:
+          [
+            {
+              type:"Butao",
+              nome:"retorna A",
+                paginaDestino:"paginaA",
+              y:50,
+              x:267
+            },{
+              type:"Butao",
+              nome:"b",
+              y:50,
+              x:336,
+              paginaDestino:"paginaB",
+              subMenu:[
+                {nome:"ioio"},
+                {nome:"jyed"},
+              ]
+            },
+            {
+              type:"Butao",
+              nome:"bfrf",
+              paginaDestino:"paginaC",
+              y:50,
+              x:436,
+              subMenu:[
+                {nome:"ss"},
+                {nome:"ff"},
+              ]
+            }
+          ]
+        }
+      ]},
+      paginaD:{
+       content:[
+         {
+           background:'http://localhost:5984/geoj/banana/banana-png-image.png',
+           backgroundColor: 0x51225e,// 0xdddddd 0x51225e 0xc6e2ff 0x3f88c5 0xf6f7eb
+           text:{str:"If you’re targeting a web browser, the event loop is deeply built into browser’s execution model. There, the event loop will run the show, and you’ll use it as your game loop too. You’ll call something like requestAnimationFrame() \
+           and it will call back into your code to keep the game running.",
+           posx:30,
+           posy:300
+          },
+           menu:
+           [
+             {
+               type:"Butao",
+               nome:"retorna A",
+                 paginaDestino:"paginaA",
+               y:50,
+               x:267
+             },{
+               type:"Butao",
+               nome:"b",
+               y:50,
+               x:336,
+               paginaDestino:"paginaB",
+               subMenu:[
+                 {nome:"ioio"},
+                 {nome:"jyed"},
+               ]
+             },
+             {
+               type:"Butao",
+               nome:"bfrf",
+               paginaDestino:"paginaC",
+               y:50,
+               x:436,
+               subMenu:[
+                 {nome:"ss"},
+                 {nome:"ff"},
+               ]
+             }
+           ]
+         }
+       ]}
+
 
 
   }

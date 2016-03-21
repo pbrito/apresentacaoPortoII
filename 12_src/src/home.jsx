@@ -51,18 +51,18 @@ export default class Home extends React.Component {
   // Check whether current mouse position is within a rectangle
   regionhit ( x,  y,  w,  h){
     var uistate=this.props.reduxState.mouseReducer
-    var canvas = ReactDom.findDOMNode(this.refs.canvas);
-    if(canvas){
-      var context = canvas.getContext("2d");
-      //  console.log(canvas);
-      //  console.log(context);
-      //   var p = context.getImageData(uistate.mousex, uistate.mousey, 1, 1).data;
-      //   var hex = "#" + ("000000" + this.rgbToHex(p[0], p[1], p[2])).slice(-6);
-      //   //console.log(hex);
-      //   if (hex!=="#000000") {
-      //    return false
-      //   }
-    }
+    // var canvas = ReactDom.findDOMNode(this.refs.canvas);
+    // if(canvas){
+    //   var context = canvas.getContext("2d");
+    //   //  console.log(canvas);
+    //   //  console.log(context);
+    //   //   var p = context.getImageData(uistate.mousex, uistate.mousey, 1, 1).data;
+    //   //   var hex = "#" + ("000000" + this.rgbToHex(p[0], p[1], p[2])).slice(-6);
+    //   //   //console.log(hex);
+    //   //   if (hex!=="#000000") {
+    //   //    return false
+    //   //   }
+    // }
 
     if (uistate.mousex[0].pos < x ||
       uistate.mousey < y ||
@@ -273,7 +273,7 @@ export default class Home extends React.Component {
     var top = but.y;
     var left= but.x;
     var subM=(<div/>)
-
+    let filtro=""
     if (uistate.activeitem == num){
       if (uistate.mouseup){
         if(uistate.hotitem==num )  {
@@ -364,6 +364,7 @@ export default class Home extends React.Component {
       if (uistate.hotitem == num)
       {// Button is merely 'hot'
         cor="green"
+        filtro="blur(1px) brightness(0.6)"
         var ttp=0;
         var velocit=
         Math.abs(this.props.reduxState.mouseReducer.mousex[0].pos
@@ -404,18 +405,24 @@ export default class Home extends React.Component {
         cor="blue"
       }
 
+         let backP=  but.paginaDestino
 
+        if(backP===undefined) backP=""
+        else backP=this.props.reduxState.siteApp[ but.paginaDestino].content[0].background
       return(
         <div>
           <div style={{position: "absolute",
             top: top+"px",
             left: left+"px",
-            backgroundColor: cor,
             width: 64+"px",
             height: "48px",
             textAlign: "center"
-          }}>{num}</div>
-          {subM}
+          }}>
+<img style={{position: "absolute","top": "0px",
+  WebkitFilter : filtro,
+  left:" -2px",width:"60px",height:"60px",borderRadius:"100%",border:"3px solid #015389"}} src={backP}/>
+          </div>
+
         </div>)
     }
 
@@ -489,7 +496,6 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
    }
 
   desenhaMenu(){
-
     var erro= false;
     var {reduxState } = this.props;
     //console.log(this.props.reduxState.mouseReducer.pagina);
@@ -511,12 +517,207 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
 
   }
 
+   desenhaLi2(l,i) {
+     var {reduxState } = this.props;
+    let uistate=reduxState.mouseReducer;
+     var num= l;
+     var top = 6 +(i*125);
+     var left= 0;
+     let filtro=""
+     if (uistate.activeitem == num){
+       if (uistate.mouseup){
+         if(uistate.hotitem==num )  {
+           let pgX= this.props.reduxState.mouseReducer.pagina.id;
+
+           let escP=(this.props.reduxState.siteApp[pgX].content[0].menu
+             .filter(function(a){if(a.nome==uistate.hotitem) return a })
+           );
+
+           if(uistate.hotitem)
+           {
+            //  if (escP[0].paginaDestino!==undefined) {
+            //    this.height.push( {
+            //      type: 'GO_TO_PAGE', pagina: escP[0].paginaDestino
+            //    })
+            //    this.height.push( {
+            //      type: 'START_TRANSICAO',
+            //       transicaoType: "circle",
+            //         x:this.props.reduxState.mouseReducer.mousex[0].pos,
+            //         y:this.props.reduxState.mouseReducer.mousey,
+            //      start: new Date(),
+            //      paginaStart:  pgX,
+            //      paginaEnd: escP[0].paginaDestino
+            //    })
+             //
+            //  }
+           }
+           else {
+
+             alert("click no botao  \n\t"+uistate.hotitem)
+
+           }
+         }
+         // set notActive
+         if(uistate.activeitem!==0 )
+         {
+           this.height.push( {
+             type: 'ACTIVE_ITEM', id: 0
+           })
+         }
+       }
+     }
+     else{
+       if(uistate.hotitem==num )
+       if (uistate.mousedown){
+         if(uistate.activeitem!==num )
+         this.height.push( {
+           type: 'ACTIVE_ITEM', id: num
+         })
+       }
+     }
+     //if inside
+     if (this.regionhit ( left ,  top , 600,  124)){
+
+       if(uistate.activeitem==0 )
+       {
+         if(uistate.hotitem!==num )
+         this.height.push( {
+           type: 'HOT_ITEM', id: num
+         })
+       }
+       if(uistate.activeitem==num ){
+         if(uistate.hotitem!==num )
+         this.height.push( {
+           type: 'HOT_ITEM', id: num
+         })
+       }
+     }
+     //if outside
+     if (!this.regionhit ( left ,  top , 600,  124)){
+       if(uistate.hotitem==num )
+       this.height.push( {
+         type: 'HOT_ITEM', id: 0
+       })
+     }
+     var cor="#"+(reduxState.siteApp[l].content[0]).backgroundColor.toString(16);;
+     if (uistate.activeitem == num)
+     {
+       if (uistate.hotitem == num)
+       {// Button is merely 'hot'
+         cor="grey"
+       }else{
+         // Button is both 'hot' and 'active'
+         cor="yellow";
+       }
+     }
+     else
+     {
+       if (uistate.hotitem == num)
+       {// Button is merely 'hot'
+         cor="green"
+         filtro="blur(1px) brightness(0.6)"
+         var ttp=0;
+
+
+         }
+        //  else
+        //  // button is not hot, but it may be active
+        //  cor="blue"
+       }
+
+        //   let backP=  but.paginaDestino
+         //
+        //  if(backP===undefined) backP=""
+        //  else backP=this.props.reduxState.siteApp[ but.paginaDestino].content[0].background
+
+       var {reduxState } = this.props;
+      let xd=reduxState.siteApp[l]
+      var tt=(reduxState.siteApp[l].content[0]);
+     var stc=(tt.text.str);
+     var trns="translate3d(0px,"+ i*125+"px, 0px)"
+     var backC= cor;//tt.backgroundColor.toString(16);
+     var x=(reduxState.mouseReducer.mousex[0].pos);
+     var y=(reduxState.mouseReducer.mousey);
+
+          if ( ((6 +(i*125)) < y) && ((6 +(i*125)+125) > y) )
+          {
+
+
+              let pgX=  reduxState.mouseReducer.pagina.id;
+              let escP=(reduxState.siteApp[pgX].content[0].menu)
+
+              //  this.height.push( {
+              //    type: 'GO_TO_PAGE', pagina: l
+              //  })
+                  // console.log(  this.height);
+            if (escP[0].paginaDestino!==undefined) {
+              // this.height.push( {
+              //   type: 'GO_TO_PAGE', pagina: escP[0].paginaDestino
+              // })
+              // this.height.push( {
+              //   type: 'START_TRANSICAO',
+              //    transicaoType: "circle",
+              //      x:this.props.reduxState.mouseReducer.mousex[0].pos,
+              //      y:this.props.reduxState.mouseReducer.mousey,
+              //   start: new Date(),
+              //   paginaStart:  pgX,
+              //   paginaEnd: escP[0].paginaDestino
+              // })
+
+            }
+
+          }
+
+             return(
+               <li style=
+                 {{position: "absolute",
+                   top: "0px", width: "100%",
+                   cursor: "pointer", transition: "transform 0.5s ease", transform: trns, height: "500px",
+                   maxHeight: "125px",
+                 background: backC
+               }}
+               >
+                 <div style={{position:"absolute",top:"0",    width: "100%"}} >
+                   <header style={{display: 'flex', height: 125, justifyContent: 'space-between', alignItems: 'center', padding: '10px 20px', color: '#fff'}} >
+                     <img style={{width: 60, height: 60, borderRadius: '100%', border: '3px solid #015389'}} src= {tt.background}   />
+                         <div>
+                           <h1 style={{margin: 0, fontWeight: 500, fontSize: 25, textAlign: 'right'}}> title     </h1>
+                           <h3 style={{margin: '4px 0 0', fontWeight: 300, fontSize: 17, opacity: '0.8', textAlign: 'right'}}  >subtitulo</h3>
+                       </div>
+                     </header>
+                {/*     <div style={{color: '#fff'}}>
+                       <div style={{width: '100%', padding: '0 20px', display: 'flex', alignItems: 'center', margin: '25px 0'}}>
+                          <span className="icon ion-ios-telephone-outline" style={{display: 'block', width: 25, height: 30, margin: '0 20px 0 0', borderBottom: '1px solid rgba(255, 255, 255, 0.8)', textAlign: 'center', fontSize: 22, alignSelf: 'flex-start'}}>                          </span>
+                          <div style={{width: '80%'}}>
+                            <h2 style={{fontWeight: 500, fontSize: 20, margin: 0, fontStyle: 'italic'}}>{stc}</h2>
+                          </div>
+                        </div>
+                     </div>*/}
+                   </div>
+                 </li>
+     )
+
+   }
+   desenhaLi() {
+     var {reduxState } = this.props;
+     let kt=Object.keys(reduxState.siteApp)
+     var x=(reduxState.mouseReducer.mousex[0].pos);
+     var y=(reduxState.mouseReducer.mousey);
+
+
+     let res=(kt.filter(a=>(a!="start") ))
+
+    return res.map(
+     (l,i)=>{return this.desenhaLi2 (l,i)}
+    )
+  }
+
   desenhaCena(){
 
         this.desenhaBackground( )
     var {error,div}=this.desenhaMenu();
     if(error){
-      return( <div> wefwfe   {this.desenhaCanvas()}
+      return( <div>    {this.desenhaCanvas()}
            {div}
            {this.desenhaLayerText()}
            <canvas   style={{
@@ -535,7 +736,7 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
          )
     }
   else {
-      return  (  <div>wth2345yjuikjuhy {this.desenhaCanvas()}
+      return  (  <div> {this.desenhaCanvas()}
       {div}
       {this.desenhaLayerText()}
       <canvas   style={{
@@ -598,7 +799,7 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
 if(window.outerWidth>800)
     {return (
       <div>
-
+  {/*
         <h1>Provider and @connect example</h1>
         <span>
           <b>What time is it?</b>
@@ -606,13 +807,17 @@ if(window.outerWidth>800)
              { time ? `It is currently ` : 'No idea yet...' }
         <br/>
            {time}
+
         </span>
+         */}
         <br />
         {/* We register our button handler here and use the experimental ES7 function's binding operator "::"
             to have our handler to be bound to the component's instance. */}
+            {/*
         <button { ...attrs } onClick={::this.onTimeButtonClick}>Get time!</button>
+         */}
         <pre>
-          redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
+           redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
           redux state = { JSON.stringify(reduxState._time, null, 2) }
           redux state = { JSON.stringify(reduxState.siteApp, null, 2) }
 
@@ -624,29 +829,20 @@ if(window.outerWidth>800)
     )}
     else {
       return (
-        <div>
+        <div id="root">
+  <ul style={{zIndex:"-1",background:"#f8f8f8",height:"90%",width:"95%" ,position:"absolute",overflow:"hidden",padding:"0",margin:"0"}} >
+    {this.desenhaLi()}
 
-          <h1>Provider and @connect example</h1>
-          <span>
-            <b>What time is it?</b>
-              <br/>
-               { time ? `It is currently ` : 'No idea yet...' }
-          <br/>
-             {time}
-          </span>
-          <br />
-          {/* We register our button handler here and use the experimental ES7 function's binding operator "::"
-              to have our handler to be bound to the component's instance. */}
-          <button { ...attrs } onClick={::this.onTimeButtonClick}>Get time!</button>
-          <pre>
-            redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
-            redux state = { JSON.stringify(reduxState._time, null, 2) }
-            redux state = { JSON.stringify(reduxState.siteApp, null, 2) }
+      </ul>
+      <pre style={{zIndex:"100"}}>
+    { /*       redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
+        redux state = { JSON.stringify(reduxState._time, null, 2) }
+        redux state = { JSON.stringify(reduxState.siteApp, null, 2) }
 
-   { /*  redux state =JSON.stringify(reduxState, null, 2) */}
+{ /*  redux state =JSON.stringify(reduxState, null, 2) */}
 
-          </pre>
-          
+      </pre>
+
         </div>
       )
 
