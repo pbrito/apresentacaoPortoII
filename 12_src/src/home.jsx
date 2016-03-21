@@ -521,7 +521,7 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
      let uistate=reduxState.mouseReducer;
      let pgX= this.props.reduxState.mouseReducer.pagina.id;
      //var num= l;
-     var top = 6 +(i*125);
+     var top = (i*125);
      var left= 0;
      let largura =600
      let altura=125;
@@ -531,35 +531,34 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
      let strTr= (this.props.reduxState.mouseReducer.transicoes.start);
      let difT=(new Date())-strTr
      let actD=Math.floor((difT)/10)
-
-     var trns="translate3d(0px,"+ i*125+"px, 0px)"
-     let zind=0
-
-     //  if(actD<60)console.log(actD);
-
-
-
+     let zind=0;
 
      if(pgX!==undefined){ //existe pagina escolhida
        //console.log(pgX);
-       if(pgX!=num)
+       if(pgX!=num)//não é a pagina escolhida
        {
-         left= 0;zind=0;altura=1
+         return <div></div>
+         if(actD<60){
+            left= 0;zind=0;altura=121-(60*2)
+          }
+          if(actD==60){
+            left= 0;zind=0;altura=1
+          }
 
        }
-       else{
-         zind=1;
+       else{  // é a pagina escolhida
+         top=0;
+         left= 0;altura =600;
 
-         left= 0;altura =600
-         console.log(altura);
-         if(num ==  this.props.reduxState.mouseReducer.transicoes.paginaEnd && actD==60)
-               {trns="translate3d(0px,"+ 0+"px, 0px)"
+         if(actD==60){
 
-               }
-
-
+           zind=1;
+           top=20;
+           left= 0;altura =600;
+         }
         }
        }
+
 
 
      if (uistate.activeitem == num){
@@ -567,22 +566,23 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
          if(uistate.hotitem==num )  {
            if(uistate.hotitem)
            {
-             if (num!==undefined) {
+          if (actD < 60) console.log(actD);
+             if (num!==undefined && (actD>60 || isNaN(actD) )) {
 
                let novo_num=num;
                if(num == pgX)  novo_num=undefined
                this.height.push( {
                  type: 'GO_TO_PAGE', pagina: novo_num
                })
-               this.height.push( {
-                 type: 'START_TRANSICAO',
-                  transicaoType: "circle",
-                    x:this.props.reduxState.mouseReducer.mousex[0].pos,
-                    y:this.props.reduxState.mouseReducer.mousey,
-                 start: new Date(),
-                 paginaStart:  pgX,
-                 paginaEnd: novo_num
-               })
+                //  this.height.push( {
+                //    type: 'START_TRANSICAO',
+                //     transicaoType: "circle",
+                //       x:this.props.reduxState.mouseReducer.mousex[0].pos,
+                //       y:this.props.reduxState.mouseReducer.mousey,
+                //    start: new Date(),
+                //    paginaStart:  pgX,
+                //    paginaEnd: novo_num
+                //  })
 
               }
            }
@@ -610,8 +610,9 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
          })
        }
      }
-     //if inside
-     if (this.regionhit ( left ,  top , largura,  altura)){
+    //  console.log(his.regionhit ( left ,  top , largura,  altura) && actD<0 && actD>60 );
+  if(!(actD<60)){   //if inside
+     if (this.regionhit ( left ,  top , largura,  altura) ){
 
        if(uistate.activeitem==0 )
        {
@@ -630,6 +631,11 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
      //if outside
      if (!this.regionhit ( left ,  top , largura,  altura )){
        if(uistate.hotitem==num )
+       this.height.push( {
+         type: 'HOT_ITEM', id: 0
+       })
+     }}
+     else{
        this.height.push( {
          type: 'HOT_ITEM', id: 0
        })
@@ -667,51 +673,31 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
        var stc=(tt.text.str);
 
 
-    //  if(actD<60)console.log(actD);
 
-
-      if(num ==  this.props.reduxState.mouseReducer.transicoes.paginaEnd && actD==60)
-            {trns="translate3d(0px,"+ 0+"px, 0px)"
-              zind=10
-            }
-      if(num ==  this.props.reduxState.mouseReducer.transicoes.paginaEnd && actD>60)
-          {trns="translate3d(0px,"+ 0+"px, 0px)"
-
-                    zind=10
-                  }
       var backC= cor;//tt.backgroundColor.toString(16);
       var x=(reduxState.mouseReducer.mousex[0].pos);
       var y=(reduxState.mouseReducer.mousey);
 
 
     return(
-               <li key={i} style=
-                 {{position: "absolute",
-                   top: "0px", width: "100%",
-                   cursor: "pointer", transition: "transform 0.5s ease", transform: trns, height: "500px",
-                   maxHeight: altura+"px",
-                 background: backC,
-                 zIndex: zind
-               }}
-               >
-                 <div style={{position:"absolute",   width: "100%"}} >
+          <div style={{
+              position:"absolute",
+              width: "100%"  ,
+              top: (top+"px"),
+              width: "100%",
+              cursor: "pointer",
+              transition: "transform 0.5s ease",
+              height: altura+"px",
+              background: backC,
+              zIndex: zind  }} >
                    <header style={{display: 'flex', height: altura , justifyContent: 'space-between', alignItems: 'center', padding: '10px 20px', color: '#fff'}} >
                      <img style={{width: 60, height: 60, borderRadius: '100%', border: '3px solid #015389'}} src= {tt.background}   />
                          <div>
-                           <h1 style={{margin: 0, fontWeight: 500, fontSize: 25, textAlign: 'right'}}> title     </h1>
+                           <h1 style={{margin: 0, fontWeight: 500, fontSize: 25, textAlign: 'right'}}> {num}    </h1>
                            <h3 style={{margin: '4px 0 0', fontWeight: 300, fontSize: 17, opacity: '0.8', textAlign: 'right'}}  >subtitulo</h3>
                        </div>
                      </header>
-                {/*     <div style={{color: '#fff'}}>
-                       <div style={{width: '100%', padding: '0 20px', display: 'flex', alignItems: 'center', margin: '25px 0'}}>
-                          <span className="icon ion-ios-telephone-outline" style={{display: 'block', width: 25, height: 30, margin: '0 20px 0 0', borderBottom: '1px solid rgba(255, 255, 255, 0.8)', textAlign: 'center', fontSize: 22, alignSelf: 'flex-start'}}>                          </span>
-                          <div style={{width: '80%'}}>
-                            <h2 style={{fontWeight: 500, fontSize: 20, margin: 0, fontStyle: 'italic'}}>{stc}</h2>
-                          </div>
-                        </div>
-                     </div>*/}
                    </div>
-                 </li>
      )
 
    }
@@ -846,12 +832,12 @@ if(window.outerWidth>800)
     else {
       return (
         <div id="root">
-  <ul style={{zIndex:"-1",background:"#f8f8f8",height:"90%",width:"95%" ,position:"absolute",overflow:"hidden",padding:"0",margin:"0"}} >
+  <div style={{zIndex:"-1",background:"#f8f8f8",height:"90%",width:"95%" ,position:"absolute",overflow:"hidden",padding:"0",margin:"0"}} >
     {this.desenhaLi()}
 
-      </ul>
+  </div>
       <pre style={{zIndex:"100"}}>
-  { /*        redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
+          redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
         redux state = { JSON.stringify(reduxState._time, null, 2) }
         redux state = { JSON.stringify(reduxState.siteApp, null, 2) }
 
