@@ -157,7 +157,7 @@ export function particReducer(state = [{position:[0,0],accel:0,velocity:0,mass:0
 }
 export function siteApp(state =
   {
-    start:"paginaA",
+    //start:"paginaA",
     paginaA:{
       content:[
       {

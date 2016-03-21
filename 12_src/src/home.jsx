@@ -82,12 +82,13 @@ export default class Home extends React.Component {
     var zombieTexture;
     //segundos data a b -- Math.floor((b-a)/1000)
 
-    let strTr=(this.props.reduxState.mouseReducer.transicoes.start);
+    let strTr= (this.props.reduxState.mouseReducer.transicoes.start);
     let difT=(new Date())-strTr
     let actD=Math.floor((difT)/70)
 
     if (strTr===undefined  ){
       let pgX= this.props.reduxState.mouseReducer.pagina.id;
+      if(pgX===undefined) pgX="paginaA";
       let backP=(this.props.reduxState.siteApp[pgX].content[0].background)
       let backCl=(this.props.reduxState.siteApp[pgX].content[0].backgroundColor)
       zombieTexture= PIXI.Texture.fromImage(backP);
@@ -103,9 +104,6 @@ export default class Home extends React.Component {
 
     }
     if (strTr!==undefined && actD == this.props.reduxState.mouseReducer.transicoes.duration ){
-
-
-
       let pgX= this.props.reduxState.mouseReducer.pagina.id;
       let backP=(this.props.reduxState.siteApp[pgX].content[0].background)
       let backCl=(this.props.reduxState.siteApp[pgX].content[0].backgroundColor)
@@ -118,12 +116,10 @@ export default class Home extends React.Component {
       zombie.position.y=100;
       this.backgroundContainerOld.addChild(back);
       this.backgroundContainerOld.addChild(zombie);
-
       this.renderer2.render(this.backgroundContainerOld);
 
     }
     if (strTr!==undefined && actD < this.props.reduxState.mouseReducer.transicoes.duration)
-
     {
       let pgX= this.props.reduxState.mouseReducer.pagina.id;
       let backP=(this.props.reduxState.siteApp[pgX].content[0].background)
@@ -184,9 +180,9 @@ export default class Home extends React.Component {
     this.renderer2 = new PIXI.WebGLRenderer(1400, 600,{ view:vv2,  transparent : true});
     //define a pagina que comeca que esta no model
     let d1=new Date();
-    this.props.reduxState.mouseReducer.pagina={
-      time: d1,
-      id:this.props.reduxState.siteApp.start};
+    // this.props.reduxState.mouseReducer.pagina={
+    //   time: d1,
+    //   id:"paginaA"};
   }
   componentDidMount(){
 
@@ -278,6 +274,7 @@ export default class Home extends React.Component {
       if (uistate.mouseup){
         if(uistate.hotitem==num )  {
           let pgX= this.props.reduxState.mouseReducer.pagina.id;
+            if(pgX===undefined) pgX="paginaA";
 
           let escP=(this.props.reduxState.siteApp[pgX].content[0].menu
             .filter(function(a){if(a.nome==uistate.hotitem) return a })
@@ -369,36 +366,36 @@ export default class Home extends React.Component {
         var velocit=
         Math.abs(this.props.reduxState.mouseReducer.mousex[0].pos
           -this.props.reduxState.mouseReducer.mousex[2].pos)
-          // console.log(velocit);
-        if (but.subMenu && velocit <40)
-        subM=but.subMenu.map(
-          (a,i)=>  {
-            var nn="";
-            if(this.animacoes[a.nome]===undefined)
-            {
-              ttp=top
-              this.animacoes[a.nome]={"delta":0.0}
-            }
-            else{
-              nn=a.nome.slice(0,Math.floor(this.animacoes[a.nome].delta/15))
-              if(this.animacoes[a.nome].delta<60)
-              {ttp=top+this.animacoes[a.nome].delta
-                this.animacoes[a.nome]={"delta": this.animacoes[a.nome].delta+3 }
-              }
-              else{
-                nn=a.nome
-                ttp=top+this.animacoes[a.nome].delta
-              }
-            }
-            return ( <div style={{position: "absolute",
-              top: (ttp+(64*i))+"px",
-              left: left+"px",
-              backgroundColor: cor,
-              width: this.animacoes[a.nome].delta+"px",
-              height: "48px",
-              textAlign: "center"
-            }}>{nn}{/*i*/}</div>)
-          })
+                  // console.log(velocit);
+        // if (but.subMenu && velocit <40)
+        // subM=but.subMenu.map(
+        //   (a,i)=>  {
+        //     var nn="";
+        //     if(this.animacoes[a.nome]===undefined)
+        //     {
+        //       ttp=top
+        //       this.animacoes[a.nome]={"delta":0.0}
+        //     }
+        //     else{
+        //       nn=a.nome.slice(0,Math.floor(this.animacoes[a.nome].delta/15))
+        //       if(this.animacoes[a.nome].delta<60)
+        //       {ttp=top+this.animacoes[a.nome].delta
+        //         this.animacoes[a.nome]={"delta": this.animacoes[a.nome].delta+3 }
+        //       }
+        //       else{
+        //         nn=a.nome
+        //         ttp=top+this.animacoes[a.nome].delta
+        //       }
+        //     }
+        //     return ( <div style={{position: "absolute",
+        //       top: (ttp+(64*i))+"px",
+        //       left: left+"px",
+        //       backgroundColor: cor,
+        //       width: this.animacoes[a.nome].delta+"px",
+        //       height: "48px",
+        //       textAlign: "center"
+        //     }}>{nn}{/*i*/}</div>)
+        //   })
 
         }else
         // button is not hot, but it may be active
@@ -500,6 +497,7 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
     var {reduxState } = this.props;
     //console.log(this.props.reduxState.mouseReducer.pagina);
     let pgX= this.props.reduxState.mouseReducer.pagina.id;
+      if(pgX===undefined) pgX="paginaA";
 
     //test de overlaping Só testa o 2 com o 3
     var a=reduxState.siteApp[pgX].content[0].menu[2]
@@ -516,40 +514,77 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
        )
 
   }
-
-   desenhaLi2(l,i) {
+//num nome pagina.id  i-index
+//pgX nome da pagina escolhida
+   desenhaLi2(num,i) {
      var {reduxState } = this.props;
-    let uistate=reduxState.mouseReducer;
-     var num= l;
+     let uistate=reduxState.mouseReducer;
+     let pgX= this.props.reduxState.mouseReducer.pagina.id;
+     //var num= l;
      var top = 6 +(i*125);
      var left= 0;
+     let largura =600
+     let altura=125;
      let filtro=""
+
+     //animacao
+     let strTr= (this.props.reduxState.mouseReducer.transicoes.start);
+     let difT=(new Date())-strTr
+     let actD=Math.floor((difT)/10)
+
+     var trns="translate3d(0px,"+ i*125+"px, 0px)"
+     let zind=0
+
+     //  if(actD<60)console.log(actD);
+
+
+
+
+     if(pgX!==undefined){ //existe pagina escolhida
+       //console.log(pgX);
+       if(pgX!=num)
+       {
+         left= 0;zind=0;altura=1
+
+       }
+       else{
+         zind=1;
+
+         left= 0;altura =600
+         console.log(altura);
+         if(num ==  this.props.reduxState.mouseReducer.transicoes.paginaEnd && actD==60)
+               {trns="translate3d(0px,"+ 0+"px, 0px)"
+
+               }
+
+
+        }
+       }
+
+
      if (uistate.activeitem == num){
        if (uistate.mouseup){
          if(uistate.hotitem==num )  {
-           let pgX= this.props.reduxState.mouseReducer.pagina.id;
-
-           let escP=(this.props.reduxState.siteApp[pgX].content[0].menu
-             .filter(function(a){if(a.nome==uistate.hotitem) return a })
-           );
-
            if(uistate.hotitem)
            {
-            //  if (escP[0].paginaDestino!==undefined) {
-            //    this.height.push( {
-            //      type: 'GO_TO_PAGE', pagina: escP[0].paginaDestino
-            //    })
-            //    this.height.push( {
-            //      type: 'START_TRANSICAO',
-            //       transicaoType: "circle",
-            //         x:this.props.reduxState.mouseReducer.mousex[0].pos,
-            //         y:this.props.reduxState.mouseReducer.mousey,
-            //      start: new Date(),
-            //      paginaStart:  pgX,
-            //      paginaEnd: escP[0].paginaDestino
-            //    })
-             //
-            //  }
+             if (num!==undefined) {
+
+               let novo_num=num;
+               if(num == pgX)  novo_num=undefined
+               this.height.push( {
+                 type: 'GO_TO_PAGE', pagina: novo_num
+               })
+               this.height.push( {
+                 type: 'START_TRANSICAO',
+                  transicaoType: "circle",
+                    x:this.props.reduxState.mouseReducer.mousex[0].pos,
+                    y:this.props.reduxState.mouseReducer.mousey,
+                 start: new Date(),
+                 paginaStart:  pgX,
+                 paginaEnd: novo_num
+               })
+
+              }
            }
            else {
 
@@ -576,7 +611,7 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
        }
      }
      //if inside
-     if (this.regionhit ( left ,  top , 600,  124)){
+     if (this.regionhit ( left ,  top , largura,  altura)){
 
        if(uistate.activeitem==0 )
        {
@@ -593,13 +628,13 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
        }
      }
      //if outside
-     if (!this.regionhit ( left ,  top , 600,  124)){
+     if (!this.regionhit ( left ,  top , largura,  altura )){
        if(uistate.hotitem==num )
        this.height.push( {
          type: 'HOT_ITEM', id: 0
        })
      }
-     var cor="#"+(reduxState.siteApp[l].content[0]).backgroundColor.toString(16);;
+     var cor="#"+(reduxState.siteApp[num].content[0]).backgroundColor.toString(16);;
      if (uistate.activeitem == num)
      {
        if (uistate.hotitem == num)
@@ -620,65 +655,47 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
 
 
          }
-        //  else
-        //  // button is not hot, but it may be active
-        //  cor="blue"
+         else
+         // button is not hot, but it may be active
+         cor="#"+(reduxState.siteApp[num].content[0]).backgroundColor.toString(16);
        }
 
-        //   let backP=  but.paginaDestino
-         //
-        //  if(backP===undefined) backP=""
-        //  else backP=this.props.reduxState.siteApp[ but.paginaDestino].content[0].background
 
        var {reduxState } = this.props;
-      let xd=reduxState.siteApp[l]
-      var tt=(reduxState.siteApp[l].content[0]);
-     var stc=(tt.text.str);
-     var trns="translate3d(0px,"+ i*125+"px, 0px)"
-     var backC= cor;//tt.backgroundColor.toString(16);
-     var x=(reduxState.mouseReducer.mousex[0].pos);
-     var y=(reduxState.mouseReducer.mousey);
-
-          if ( ((6 +(i*125)) < y) && ((6 +(i*125)+125) > y) )
-          {
+       let xd=reduxState.siteApp[num]
+       var tt=(reduxState.siteApp[num].content[0]);
+       var stc=(tt.text.str);
 
 
-              let pgX=  reduxState.mouseReducer.pagina.id;
-              let escP=(reduxState.siteApp[pgX].content[0].menu)
+    //  if(actD<60)console.log(actD);
 
-              //  this.height.push( {
-              //    type: 'GO_TO_PAGE', pagina: l
-              //  })
-                  // console.log(  this.height);
-            if (escP[0].paginaDestino!==undefined) {
-              // this.height.push( {
-              //   type: 'GO_TO_PAGE', pagina: escP[0].paginaDestino
-              // })
-              // this.height.push( {
-              //   type: 'START_TRANSICAO',
-              //    transicaoType: "circle",
-              //      x:this.props.reduxState.mouseReducer.mousex[0].pos,
-              //      y:this.props.reduxState.mouseReducer.mousey,
-              //   start: new Date(),
-              //   paginaStart:  pgX,
-              //   paginaEnd: escP[0].paginaDestino
-              // })
 
+      if(num ==  this.props.reduxState.mouseReducer.transicoes.paginaEnd && actD==60)
+            {trns="translate3d(0px,"+ 0+"px, 0px)"
+              zind=10
             }
+      if(num ==  this.props.reduxState.mouseReducer.transicoes.paginaEnd && actD>60)
+          {trns="translate3d(0px,"+ 0+"px, 0px)"
 
-          }
+                    zind=10
+                  }
+      var backC= cor;//tt.backgroundColor.toString(16);
+      var x=(reduxState.mouseReducer.mousex[0].pos);
+      var y=(reduxState.mouseReducer.mousey);
 
-             return(
-               <li style=
+
+    return(
+               <li key={i} style=
                  {{position: "absolute",
                    top: "0px", width: "100%",
                    cursor: "pointer", transition: "transform 0.5s ease", transform: trns, height: "500px",
-                   maxHeight: "125px",
-                 background: backC
+                   maxHeight: altura+"px",
+                 background: backC,
+                 zIndex: zind
                }}
                >
-                 <div style={{position:"absolute",top:"0",    width: "100%"}} >
-                   <header style={{display: 'flex', height: 125, justifyContent: 'space-between', alignItems: 'center', padding: '10px 20px', color: '#fff'}} >
+                 <div style={{position:"absolute",   width: "100%"}} >
+                   <header style={{display: 'flex', height: altura , justifyContent: 'space-between', alignItems: 'center', padding: '10px 20px', color: '#fff'}} >
                      <img style={{width: 60, height: 60, borderRadius: '100%', border: '3px solid #015389'}} src= {tt.background}   />
                          <div>
                            <h1 style={{margin: 0, fontWeight: 500, fontSize: 25, textAlign: 'right'}}> title     </h1>
@@ -706,7 +723,6 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
 
 
      let res=(kt.filter(a=>(a!="start") ))
-
     return res.map(
      (l,i)=>{return this.desenhaLi2 (l,i)}
     )
@@ -835,7 +851,7 @@ if(window.outerWidth>800)
 
       </ul>
       <pre style={{zIndex:"100"}}>
-    { /*       redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
+  { /*        redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
         redux state = { JSON.stringify(reduxState._time, null, 2) }
         redux state = { JSON.stringify(reduxState.siteApp, null, 2) }
 
