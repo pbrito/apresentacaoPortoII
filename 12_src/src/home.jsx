@@ -530,7 +530,7 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
      //animacao
      let strTr= (this.props.reduxState.mouseReducer.transicoes.start);
      let difT=(new Date())-strTr
-     let actD=Math.floor((difT)/10)
+     let actD=Math.floor((difT)/30)
      let zind=0;
 
      if(pgX!==undefined){ //existe pagina escolhida
@@ -547,42 +547,39 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
 
        }
        else{  // é a pagina escolhida
-         top=0;
-         left= 0;altura =600;
 
-         if(actD==60){
+          zind=1;
+          top=0;
+          left= 0;
+          altura =600;
 
-           zind=1;
-           top=20;
-           left= 0;altura =600;
+          if(actD<60){
+            //animacao da pagina escolhida
+            altura =actD*10;
          }
         }
        }
-
-
 
      if (uistate.activeitem == num){
        if (uistate.mouseup){
          if(uistate.hotitem==num )  {
            if(uistate.hotitem)
            {
-          if (actD < 60) console.log(actD);
-             if (num!==undefined && (actD>60 || isNaN(actD) )) {
-
+             if (num!==undefined ) {
                let novo_num=num;
                if(num == pgX)  novo_num=undefined
                this.height.push( {
                  type: 'GO_TO_PAGE', pagina: novo_num
                })
-                //  this.height.push( {
-                //    type: 'START_TRANSICAO',
-                //     transicaoType: "circle",
-                //       x:this.props.reduxState.mouseReducer.mousex[0].pos,
-                //       y:this.props.reduxState.mouseReducer.mousey,
-                //    start: new Date(),
-                //    paginaStart:  pgX,
-                //    paginaEnd: novo_num
-                //  })
+                 this.height.push( {
+                   type: 'START_TRANSICAO',
+                    transicaoType: "paginaLite",
+                      x:this.props.reduxState.mouseReducer.mousex[0].pos,
+                      y:this.props.reduxState.mouseReducer.mousey,
+                   start: new Date(),
+                   paginaStart:  pgX,
+                   paginaEnd: novo_num
+                 })
 
               }
            }
@@ -611,7 +608,7 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
        }
      }
     //  console.log(his.regionhit ( left ,  top , largura,  altura) && actD<0 && actD>60 );
-  if(!(actD<60)){   //if inside
+    //if inside
      if (this.regionhit ( left ,  top , largura,  altura) ){
 
        if(uistate.activeitem==0 )
@@ -634,12 +631,8 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
        this.height.push( {
          type: 'HOT_ITEM', id: 0
        })
-     }}
-     else{
-       this.height.push( {
-         type: 'HOT_ITEM', id: 0
-       })
      }
+
      var cor="#"+(reduxState.siteApp[num].content[0]).backgroundColor.toString(16);;
      if (uistate.activeitem == num)
      {
@@ -678,7 +671,6 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
       var x=(reduxState.mouseReducer.mousex[0].pos);
       var y=(reduxState.mouseReducer.mousey);
 
-
     return(
           <div style={{
               position:"absolute",
@@ -686,17 +678,18 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
               top: (top+"px"),
               width: "100%",
               cursor: "pointer",
-              transition: "transform 0.5s ease",
               height: altura+"px",
               background: backC,
+              minHeight:altura+"px",
+              maxHeight:altura+"px",
               zIndex: zind  }} >
-                   <header style={{display: 'flex', height: altura , justifyContent: 'space-between', alignItems: 'center', padding: '10px 20px', color: '#fff'}} >
-                     <img style={{width: 60, height: 60, borderRadius: '100%', border: '3px solid #015389'}} src= {tt.background}   />
-                         <div>
-                           <h1 style={{margin: 0, fontWeight: 500, fontSize: 25, textAlign: 'right'}}> {num}    </h1>
-                           <h3 style={{margin: '4px 0 0', fontWeight: 300, fontSize: 17, opacity: '0.8', textAlign: 'right'}}  >subtitulo</h3>
-                       </div>
-                     </header>
+              <header style={{display: 'flex', height: altura , justifyContent: 'space-between', alignItems: 'center', padding: '10px 20px', color: '#fff'}} >
+                <img style={{width: 60, height: 60, borderRadius: '100%', border: '3px solid #015389'}} src= {tt.background}   />
+                    <div>
+                      <h1 style={{margin: 0, fontWeight: 500, fontSize: 25, textAlign: 'right'}}> {num}    </h1>
+                      <h3 style={{margin: '4px 0 0', fontWeight: 300, fontSize: 17, opacity: '0.8', textAlign: 'right'}}  >subtitulo</h3>
+                  </div>
+                </header>
                    </div>
      )
 
@@ -819,7 +812,7 @@ if(window.outerWidth>800)
         <button { ...attrs } onClick={::this.onTimeButtonClick}>Get time!</button>
          */}
         <pre>
-           redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
+{ /*            redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
           redux state = { JSON.stringify(reduxState._time, null, 2) }
           redux state = { JSON.stringify(reduxState.siteApp, null, 2) }
 
@@ -837,7 +830,7 @@ if(window.outerWidth>800)
 
   </div>
       <pre style={{zIndex:"100"}}>
-          redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
+{ /*           redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
         redux state = { JSON.stringify(reduxState._time, null, 2) }
         redux state = { JSON.stringify(reduxState.siteApp, null, 2) }
 
