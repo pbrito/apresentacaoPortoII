@@ -521,11 +521,12 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
      let uistate=reduxState.mouseReducer;
      let pgX= this.props.reduxState.mouseReducer.pagina.id;
      //var num= l;
-     var top = (i*125);
+     var top = (i*110);
      var left= 0;
-     let largura =600
-     let altura=125;
+     let largura =500
+     let altura=110;
      let filtro=""
+     let kt=Object.keys(reduxState.siteApp)
 
      //animacao
      let strTr= (this.props.reduxState.mouseReducer.transicoes.start);
@@ -537,28 +538,67 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
        //console.log(pgX);
        if(pgX!=num)//não é a pagina escolhida
        {
-         return <div></div>
-         if(actD<60){
-            left= 0;zind=0;altura=121-(60*2)
+         if(actD>160)
+         {return <div></div>
           }
-          if(actD==60){
-            left= 0;zind=0;altura=1
-          }
+        else {
+          //  if(kt.indexOf(num)<i)
+          //  {
+          //    if(actD<60){
+          //    top =top-(actD*10);
+          //   }
+          //  }
+           if(actD<90){
+             console.log(kt.indexOf(num));
+             if(kt.indexOf(pgX)>i)
+             {
+               top =top-(actD*10);
+               if(top < 0) top=0
+            }
+             if(kt.indexOf(pgX)<i)
+             {
+              //  if(top > 400) top=400
+              top =90+top+(actD*5);
+
+              //altura =altura-(actD*5);
+              altura =altura-(actD*4);
+           }
+            //  altura =altura-(actD*20);
+          //   if((top)>15 ) altura=0;
+          //
+          //    altura =altura-(actD*10);
+          //    if((altura)<15 ) altura=0;
+            }
+
+           }
+
 
        }
        else{  // é a pagina escolhida
 
-          zind=1;
-          top=0;
+          zind=10;
+           top = (i*110);
           left= 0;
-          altura =600;
+          altura =200;
 
-          if(actD<60){
+          if(actD<30){
             //animacao da pagina escolhida
-            altura =actD*10;
+            // top=top-actD*10;
+            // if(top<0) top=0;
+            //
+            // altura =altura+actD*20;
+            // if((top+altura)>500) altura=500-top;
+
          }
+         else {
+            top=0
+            altura=500;
+         }
+
+
+
         }
-       }
+    }
 
      if (uistate.activeitem == num){
        if (uistate.mouseup){
@@ -636,9 +676,13 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
      var cor="#"+(reduxState.siteApp[num].content[0]).backgroundColor.toString(16);;
      if (uistate.activeitem == num)
      {
+       if(pgX===undefined) {
+         top = (i*100);
+         altura=200; zind=2;
+       }
        if (uistate.hotitem == num)
        {// Button is merely 'hot'
-         cor="grey"
+        // cor="grey"
        }else{
          // Button is both 'hot' and 'active'
          cor="yellow";
@@ -648,15 +692,34 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
      {
        if (uistate.hotitem == num)
        {// Button is merely 'hot'
-         cor="green"
+         //cor="green"
+         if(pgX===undefined){
+           top = (i*100);
+           altura=200; zind=2;
+          // if(i==3) {top=top-70} //ultimo elemento
+           //== console.log(i+"  "+ kt.indexOf(num)   );
+       }
          filtro="blur(1px) brightness(0.6)"
          var ttp=0;
 
 
          }
-         else
-         // button is not hot, but it may be active
-         cor="#"+(reduxState.siteApp[num].content[0]).backgroundColor.toString(16);
+         else{
+           // button is not hot, but it may be active
+           if(pgX===undefined && (uistate.hotitem!=0))//
+           {
+             top = (i*100);
+             altura=100; zind=0 ;
+             //console.log
+            // console.log(kt.indexOf(uistate.hotitem)>i)
+             if(kt.indexOf(uistate.hotitem)<i)
+             {
+               top = ((i-1)*100)+200;
+               altura=100; zind=0 ;
+             }
+           }
+           cor="#"+(reduxState.siteApp[num].content[0]).backgroundColor.toString(16);
+         }
        }
 
 
@@ -671,26 +734,57 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
       var x=(reduxState.mouseReducer.mousex[0].pos);
       var y=(reduxState.mouseReducer.mousey);
 
+      let orf=<div></div>
+
+        if(pgX!==undefined && pgX ==num){ //existe pagina escolhida
+            if(actD>20 & actD<100)
+              orf=<div style={{
+                  position:"absolute",
+                  width: "80%"  ,
+                  top: "100px",
+                  left:"20px ",
+                  color:"black",
+                  background: "beige",
+                  opacity:"0."+actD,
+                }} > {stc} </div>
+
+              if(actD>=100)
+                  orf=<div style={{
+                      position:"absolute",
+                      width: "80%"  ,
+                      top: "100px",
+                      left:"20px ",
+                      color:"black",
+                      background: "beige",
+                      opacity:"1",
+                    }} > {stc} </div>
+    }
+
     return(
           <div style={{
               position:"absolute",
               width: "100%"  ,
               top: (top+"px"),
+
+                  overflow: "hidden",
+            //  transition: "height .1s linear ,top .1s linear ,maxHeight .1s linear ",
+            //  transform: "max-height 0.8s",
               width: "100%",
               cursor: "pointer",
               height: altura+"px",
               background: backC,
-              minHeight:altura+"px",
+            //  minHeight:altura+"px",
               maxHeight:altura+"px",
               zIndex: zind  }} >
-              <header style={{display: 'flex', height: altura , justifyContent: 'space-between', alignItems: 'center', padding: '10px 20px', color: '#fff'}} >
-                <img style={{width: 60, height: 60, borderRadius: '100%', border: '3px solid #015389'}} src= {tt.background}   />
+                <header style={{display: 'flex', justifyContent: 'space-between', padding: '10px 20px', color: '#fff'}} >
+                <img style={{width: 60, height: 60, overflow: "hidden",borderRadius: '100%', border: '3px solid #015389'}} src= {tt.background}   />
                     <div>
                       <h1 style={{margin: 0, fontWeight: 500, fontSize: 25, textAlign: 'right'}}> {num}    </h1>
                       <h3 style={{margin: '4px 0 0', fontWeight: 300, fontSize: 17, opacity: '0.8', textAlign: 'right'}}  >subtitulo</h3>
                   </div>
-                </header>
-                   </div>
+              </header>
+              {orf}
+          </div>
      )
 
    }
