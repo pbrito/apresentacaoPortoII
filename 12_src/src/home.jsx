@@ -557,11 +557,12 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
             }
              if(kt.indexOf(pgX)<i)
              {
+               top=((i-1)*100)+200+(actD*10)
               //  if(top > 400) top=400
-              top =90+top+(actD*5);
+              //top =90+top+(actD*5);
 
-              //altura =altura-(actD*5);
-              altura =altura-(actD*4);
+              //altura =10;
+              altura =altura-(actD*5);
            }
             //  altura =altura-(actD*20);
           //   if((top)>15 ) altura=0;
