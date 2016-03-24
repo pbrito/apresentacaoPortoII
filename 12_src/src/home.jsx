@@ -21,7 +21,7 @@ import * as actionCreators from './action-creators'
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
-    this.renderer =null
+  //  this.renderer =null
     this.renderer2=null;
     this.stage = new PIXI.Container();
     this.backgroundContainer = null;
@@ -186,8 +186,8 @@ export default class Home extends React.Component {
   }
   componentDidMount(){
 
-       let vv=   document.getElementById("ident")//   ReactDom.findDOMNode(this.refs.canvas);
-       this.renderer = new PIXI.WebGLRenderer(1400, 600,{ view:vv,  transparent : true});
+      // let vv=   document.getElementById("ident")//   ReactDom.findDOMNode(this.refs.canvas);
+      // this.renderer = new PIXI.WebGLRenderer(1400, 600,{ view:vv,  transparent : true});
       let vv2=      document.getElementById("identdois")//   ReactDom.findDOMNode(this.refs.canvas);
       this.renderer2 = new PIXI.WebGLRenderer(1400, 600,{ view:vv2,  transparent : true});
       this.backgroundContainer = new PIXI.Container();
@@ -203,15 +203,15 @@ export default class Home extends React.Component {
 
       document.body.appendChild(this.renderer2.view);
 
-      for (var i = 0; i < this.props.reduxState.particReducer.length; i++){
-        let graphics = new PIXI.Graphics();
-        graphics.lineStyle(40, 0Xe7f418, 0.10);
-        graphics.moveTo(-20,0);
-        graphics.lineTo(30,0);
-        this.stage.addChild( graphics);
-        this.bunnys.push( graphics);
-      }
-      document.body.appendChild(this.renderer.view);
+      // for (var i = 0; i < this.props.reduxState.particReducer.length; i++){
+      //   let graphics = new PIXI.Graphics();
+      //   graphics.lineStyle(40, 0Xe7f418, 0.10);
+      //   graphics.moveTo(-20,0);
+      //   graphics.lineTo(30,0);
+      //   this.stage.addChild( graphics);
+      //   this.bunnys.push( graphics);
+      // }
+      //document.body.appendChild(this.renderer.view);
   }
 
   componentDidUpdate(){
@@ -220,41 +220,41 @@ export default class Home extends React.Component {
     let pgX= this.props.reduxState.mouseReducer.pagina.id;
 
 
-    this.props.reduxState.particReducer.forEach((p,i)=>{
-      let [x,y] = [p.position[0] , p.position[1]]
-      let xi= (((i+3)*2+100)%125)+100
-      //  if(xi<100) xi=xi+80
-      let mi=  (p.mass*2).toFixed(0)-20
-      let zi= (mi*xi+20)%255
-      // a lista de bynnys retorna um que  vai ser tratado agora
-      var bunny = this.bunnys[i];
-      // bunny.rotation += 0.01;
-      bunny.position.x = x;
-      if(uistate.hotitem!=0)
-      {
-        if(uistate.hotitem==="c"){
-          bunny.tint= 0x000FF0;
-        }
-        else {
-          bunny.tint= 0XFFD4D5;
-        }
-      }
-      else {
-        this.animacoes={}
-        bunny.tint= 0Xf70FFF;
-      }
-      bunny.position.y = y;
-      var tesou = this.tesoura[0];
-      if (uistate.hotitem==0) {
-        //  tesou.rotation += 0.0001;
-      }
-      //if(i==1) console.log(bunny);
-      // bunny.moveTo(x,y);
-      let cor= "rgb("+mi+","+ xi+","+zi+")";
-    })
+    // this.props.reduxState.particReducer.forEach((p,i)=>{
+    //   let [x,y] = [p.position[0] , p.position[1]]
+    //   let xi= (((i+3)*2+100)%125)+100
+    //   //  if(xi<100) xi=xi+80
+    //   let mi=  (p.mass*2).toFixed(0)-20
+    //   let zi= (mi*xi+20)%255
+    //   // a lista de bynnys retorna um que  vai ser tratado agora
+    //   var bunny = this.bunnys[i];
+    //   // bunny.rotation += 0.01;
+    //   bunny.position.x = x;
+    //   if(uistate.hotitem!=0)
+    //   {
+    //     if(uistate.hotitem==="c"){
+    //       bunny.tint= 0x000FF0;
+    //     }
+    //     else {
+    //       bunny.tint= 0XFFD4D5;
+    //     }
+    //   }
+    //   else {
+    //     this.animacoes={}
+    //     bunny.tint= 0Xf70FFF;
+    //   }
+    //   bunny.position.y = y;
+    //   var tesou = this.tesoura[0];
+    //   if (uistate.hotitem==0) {
+    //     //  tesou.rotation += 0.0001;
+    //   }
+    //   //if(i==1) console.log(bunny);
+    //   // bunny.moveTo(x,y);
+    //   let cor= "rgb("+mi+","+ xi+","+zi+")";
+    // })
 
-   this.renderer.render(this.stage);
-
+  //  this.renderer.render(this.stage);
+  //
 
     //if(this.height.length!==0)console.log(this.height);
     for (var i = 0; i < this.height.length; i++) {
