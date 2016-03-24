@@ -297,8 +297,10 @@ export function siteApp(state =
          {
            background:'http://localhost:5984/geoj/banana/banana-png-image.png',
            backgroundColor: 0x51225e,// 0xdddddd 0x51225e 0xc6e2ff 0x3f88c5 0xf6f7eb
-           text:{str:"If you’re targeting a web browser, the event loop is deeply built into browser’s execution model. There, the event loop will run the show, and you’ll use it as your game loop too. You’ll call something like requestAnimationFrame() \
-           and it will call back into your code to keep the game running.",
+           text:{str:"Rendering Improvements Over the few last months, the Atom team has been working hard to improve the editor performance and deliver you an even greater experience. Today, I am going to shed some light on a few techniques we used to speed up the rendering process.\
+The whole rendering process has to be extremely fast: for performance-sensitive scenarios, such as scrolling, we strive to complete each frame in less than 16ms. To achieve such speed we adopted several performance optimizations, for example:\
+Keep the DOM as small as possible by rendering only the visible lines.\
+Use absolute coordinates for lines and apply a transform3d on the lines’ container to simulate scrolling.",
            posx:30,
            posy:300
           },

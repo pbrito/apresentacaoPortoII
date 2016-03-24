@@ -21,7 +21,7 @@ import * as actionCreators from './action-creators'
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
-  //  this.renderer =null
+    this.renderer =null
     this.renderer2=null;
     this.stage = new PIXI.Container();
     this.backgroundContainer = null;
@@ -186,8 +186,8 @@ export default class Home extends React.Component {
   }
   componentDidMount(){
 
-      // let vv=   document.getElementById("ident")//   ReactDom.findDOMNode(this.refs.canvas);
-      // this.renderer = new PIXI.WebGLRenderer(1400, 600,{ view:vv,  transparent : true});
+       let vv=   document.getElementById("ident")//   ReactDom.findDOMNode(this.refs.canvas);
+       this.renderer = new PIXI.WebGLRenderer(1400, 600,{ view:vv,  transparent : true});
       let vv2=      document.getElementById("identdois")//   ReactDom.findDOMNode(this.refs.canvas);
       this.renderer2 = new PIXI.WebGLRenderer(1400, 600,{ view:vv2,  transparent : true});
       this.backgroundContainer = new PIXI.Container();
@@ -203,15 +203,15 @@ export default class Home extends React.Component {
 
       document.body.appendChild(this.renderer2.view);
 
-      // for (var i = 0; i < this.props.reduxState.particReducer.length; i++){
-      //   let graphics = new PIXI.Graphics();
-      //   graphics.lineStyle(40, 0Xe7f418, 0.10);
-      //   graphics.moveTo(-20,0);
-      //   graphics.lineTo(30,0);
-      //   this.stage.addChild( graphics);
-      //   this.bunnys.push( graphics);
-      // }
-      //document.body.appendChild(this.renderer.view);
+      for (var i = 0; i < this.props.reduxState.particReducer.length; i++){
+        let graphics = new PIXI.Graphics();
+        graphics.lineStyle(40, 0Xe7f418, 0.10);
+        graphics.moveTo(-20,0);
+        graphics.lineTo(30,0);
+        this.stage.addChild( graphics);
+        this.bunnys.push( graphics);
+      }
+      document.body.appendChild(this.renderer.view);
   }
 
   componentDidUpdate(){
@@ -220,41 +220,41 @@ export default class Home extends React.Component {
     let pgX= this.props.reduxState.mouseReducer.pagina.id;
 
 
-    // this.props.reduxState.particReducer.forEach((p,i)=>{
-    //   let [x,y] = [p.position[0] , p.position[1]]
-    //   let xi= (((i+3)*2+100)%125)+100
-    //   //  if(xi<100) xi=xi+80
-    //   let mi=  (p.mass*2).toFixed(0)-20
-    //   let zi= (mi*xi+20)%255
-    //   // a lista de bynnys retorna um que  vai ser tratado agora
-    //   var bunny = this.bunnys[i];
-    //   // bunny.rotation += 0.01;
-    //   bunny.position.x = x;
-    //   if(uistate.hotitem!=0)
-    //   {
-    //     if(uistate.hotitem==="c"){
-    //       bunny.tint= 0x000FF0;
-    //     }
-    //     else {
-    //       bunny.tint= 0XFFD4D5;
-    //     }
-    //   }
-    //   else {
-    //     this.animacoes={}
-    //     bunny.tint= 0Xf70FFF;
-    //   }
-    //   bunny.position.y = y;
-    //   var tesou = this.tesoura[0];
-    //   if (uistate.hotitem==0) {
-    //     //  tesou.rotation += 0.0001;
-    //   }
-    //   //if(i==1) console.log(bunny);
-    //   // bunny.moveTo(x,y);
-    //   let cor= "rgb("+mi+","+ xi+","+zi+")";
-    // })
+    this.props.reduxState.particReducer.forEach((p,i)=>{
+      let [x,y] = [p.position[0] , p.position[1]]
+      let xi= (((i+3)*2+100)%125)+100
+      //  if(xi<100) xi=xi+80
+      let mi=  (p.mass*2).toFixed(0)-20
+      let zi= (mi*xi+20)%255
+      // a lista de bynnys retorna um que  vai ser tratado agora
+      var bunny = this.bunnys[i];
+      // bunny.rotation += 0.01;
+      bunny.position.x = x;
+      if(uistate.hotitem!=0)
+      {
+        if(uistate.hotitem==="c"){
+          bunny.tint= 0x000FF0;
+        }
+        else {
+          bunny.tint= 0XFFD4D5;
+        }
+      }
+      else {
+        this.animacoes={}
+        bunny.tint= 0Xf70FFF;
+      }
+      bunny.position.y = y;
+      var tesou = this.tesoura[0];
+      if (uistate.hotitem==0) {
+        //  tesou.rotation += 0.0001;
+      }
+      //if(i==1) console.log(bunny);
+      // bunny.moveTo(x,y);
+      let cor= "rgb("+mi+","+ xi+","+zi+")";
+    })
 
-  //  this.renderer.render(this.stage);
-  //
+   this.renderer.render(this.stage);
+
 
     //if(this.height.length!==0)console.log(this.height);
     for (var i = 0; i < this.height.length; i++) {
@@ -516,15 +516,15 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
   }
 //num nome pagina.id  i-index
 //pgX nome da pagina escolhida
-   desenhaLi2(num,i) {
+   desenhaMenuLinha(num,i) {
      var {reduxState } = this.props;
      let uistate=reduxState.mouseReducer;
      let pgX= this.props.reduxState.mouseReducer.pagina.id;
      //var num= l;
-     var top = (i*110);
+     var top = (i*125);
      var left= 0;
      let largura =500
-     let altura=110;
+     let altura=125;
      let filtro=""
      let kt=Object.keys(reduxState.siteApp)
 
@@ -549,7 +549,7 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
           //   }
           //  }
            if(actD<90){
-             console.log(kt.indexOf(num));
+
              if(kt.indexOf(pgX)>i)
              {
                top =top-(actD*10);
@@ -557,12 +557,12 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
             }
              if(kt.indexOf(pgX)<i)
              {
-               top=((i-1)*100)+200+(actD*10)
               //  if(top > 400) top=400
-              //top =90+top+(actD*5);
-
-              //altura =10;
-              altura =altura-(actD*5);
+                top =top+(actD*20);
+                if((top+altura) > 500) top=500-altura
+                zind=4-i;
+              //altura =altura-(actD*5);
+              //altura =altura-(actD*1);
            }
             //  altura =altura-(actD*20);
           //   if((top)>15 ) altura=0;
@@ -584,11 +584,11 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
 
           if(actD<30){
             //animacao da pagina escolhida
-            // top=top-actD*10;
-            // if(top<0) top=0;
-            //
-            // altura =altura+actD*20;
-            // if((top+altura)>500) altura=500-top;
+            top=top-actD*10;
+            if(top<0) top=0;
+
+            altura =altura+actD*20;
+            if((top+altura)>500) altura=500-top;
 
          }
          else {
@@ -736,9 +736,18 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
       var y=(reduxState.mouseReducer.mousey);
 
       let orf=<div></div>
-
-        if(pgX!==undefined && pgX ==num){ //existe pagina escolhida
-            if(actD>20 & actD<100)
+      if(pgX!==undefined && pgX ==num){ //existe pagina escolhida
+            if(actD>20 & actD<50)
+              {orf=<div style={{
+                  position:"absolute",
+                  width: "80%"  ,
+                  top: "100px",
+                  left:"20px ",
+                  color:"black",
+                  background: "beige",
+                  opacity:"0."+(actD*2),
+                }} > {stc} </div>}
+            if(actD>=50){
               orf=<div style={{
                   position:"absolute",
                   width: "80%"  ,
@@ -746,19 +755,9 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
                   left:"20px ",
                   color:"black",
                   background: "beige",
-                  opacity:"0."+actD,
+                  opacity:"1",
                 }} > {stc} </div>
-
-              if(actD>=100)
-                  orf=<div style={{
-                      position:"absolute",
-                      width: "80%"  ,
-                      top: "100px",
-                      left:"20px ",
-                      color:"black",
-                      background: "beige",
-                      opacity:"1",
-                    }} > {stc} </div>
+                }
     }
 
     return(
@@ -798,7 +797,7 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
 
      let res=(kt.filter(a=>(a!="start") ))
     return res.map(
-     (l,i)=>{return this.desenhaLi2 (l,i)}
+     (l,i)=>{return this.desenhaMenuLinha (l,i)}
     )
   }
 
@@ -857,37 +856,9 @@ if(nt-this.props.reduxState.mouseReducer.pagina.time>1000
         }
     }
 
-
-    // desenha particulas
-  //
-  //     var tt=reduxState.particReducer.map((p,i)=>{
-  //   //    console.log(p);
-  //   // console.log(p.position.toString() );
-  //   let [x,y] = [p.position[0] , p.position[1]]
-  //   let xi= (((i+3)*2+100)%125)+100
-  // //  if(xi<100) xi=xi+80
-  //   let mi=  (p.mass*2).toFixed(0)-20
-  //   let zi= (mi*xi+20)%255
-  //   // console.log(mi);
-  //
-  //   let cor= "rgb("+mi+","+ xi+","+zi+")";
-  //   //if(i==1) cor="blue"
-  //   let style= {
-  //         position: "absolute",
-  //         WebkitFilter:"blur(0.1em)",
-  //          backgroundBlendMode: "multiply",
-  //       backgroundColor: cor,
-  //       top: ((20+(y-p.mass))).toFixed(1)+"px",
-  //       left: ((20+(x-p.mass))).toFixed(1) +"px",
-  //       width: p.mass+"px",
-  //       height: p.mass+"px"
-  //   }
-  //
-  //       return(<div key={i} style={style}>
-  //
-  //       </div>); } )
 if(window.outerWidth>800)
-    {return (
+    {
+      return (
       <div>
   {/*
         <h1>Provider and @connect example</h1>
@@ -920,20 +891,20 @@ if(window.outerWidth>800)
     else {
       return (
         <div id="root">
-  <div style={{zIndex:"-1",background:"#f8f8f8",height:"90%",width:"95%" ,position:"absolute",overflow:"hidden",padding:"0",margin:"0"}} >
-    {this.desenhaLi()}
+          <div style={{zIndex:"-1",background:"#f8f8f8",height:"90%",width:"95%" ,position:"absolute",overflow:"hidden",padding:"0",margin:"0"}} >
+            {this.desenhaLi()}
+          </div>
+          <pre style={{zIndex:"100"}}>
+          { /*
+          redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
+          redux state = { JSON.stringify(reduxState._time, null, 2) }
+          redux state = { JSON.stringify(reduxState.siteApp, null, 2) }
 
-  </div>
-      <pre style={{zIndex:"100"}}>
-{ /*           redux state = { JSON.stringify(reduxState.mouseReducer, null, 2) }
-        redux state = { JSON.stringify(reduxState._time, null, 2) }
-        redux state = { JSON.stringify(reduxState.siteApp, null, 2) }
+          { /*  redux state =JSON.stringify(reduxState, null, 2)
+          */}
 
-{ /*  redux state =JSON.stringify(reduxState, null, 2) */}
-
-      </pre>
-
-        </div>
+          </pre>
+      </div>
       )
 
 

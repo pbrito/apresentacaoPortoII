@@ -113,26 +113,26 @@ corners = [[100,100], [400,100], [400,400], [100,400]]
 
 
 // chase the mouse by continually applying/adjusting force to each particle
-// looper(() => {
-//   particles = particles.map(p => {
-//    // find directional difference b/w mouse and this particle
-//     let dir = sub([store.getState().mouseReducer.mousex[0].pos,store.getState().mouseReducer.mousey], p.position)
-//     // normalize it (make the unit length 1)
-//     dir = normalize(dir)
-//     // apply movement to the particle in the direction of the mouse
-//     return applyForce(p, p.mass, dir) //<-- use the mass
-//   })
-// })()
+looper(() => {
+  particles = particles.map(p => {
+   // find directional difference b/w mouse and this particle
+    let dir = sub([store.getState().mouseReducer.mousex[0].pos,store.getState().mouseReducer.mousey], p.position)
+    // normalize it (make the unit length 1)
+    dir = normalize(dir)
+    // apply movement to the particle in the direction of the mouse
+    return applyForce(p, p.mass, dir) //<-- use the mass
+  })
+})()
 
 
 
 //
-// setInterval(t => {
-//   // console.log(particles);
-//   //store.dispatch( {type:'Mouse', particule: particles})
-//   //console.log(mouse);
-//     store.dispatch( {type:'PARTICLES', particule: particles})
-// }, 110)
+setInterval(t => {
+  // console.log(particles);
+  //store.dispatch( {type:'Mouse', particule: particles})
+  //console.log(mouse);
+    store.dispatch( {type:'PARTICLES', particule: particles})
+}, 110)
 
 
 // Now, time to render our application to the DOM using ReactDOM.render (or just render thanks to
